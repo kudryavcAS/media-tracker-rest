@@ -2,39 +2,43 @@ package io.github.kudryavcAS.mediatracker.dto;
 
 import io.github.kudryavcAS.mediatracker.model.MediaFormat;
 import io.github.kudryavcAS.mediatracker.model.WatchStatus;
+import io.github.kudryavcAS.mediatracker.util.ValidationConstants;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-// Record пишется в круглых скобках!
 public record MediaItemRequest(
 
-        @NotBlank(message = "Тип контента обязателен (MOVIE или SERIES)")
+        @NotBlank(message = "Content type is required (MOVIE or SERIES)")
         String contentType,
 
-        @NotBlank(message = "Название не может быть пустым")
+        @NotBlank(message = "Title cannot be empty")
         String title,
 
-        @NotNull(message = "Формат обязателен")
+        @NotNull(message = "Format is required")
         MediaFormat format,
 
-        @Min(value = 1888, message = "Год не может быть раньше 1888")
-        @Max(value = 2100, message = "Год не может быть больше 2100")
+        @Min(value = ValidationConstants.MIN_RELEASE_YEAR,
+                message = "Release year cannot be earlier than " + ValidationConstants.MIN_RELEASE_YEAR)
+        @Max(value = ValidationConstants.MAX_RELEASE_YEAR,
+                message = "Release year cannot be later than " + ValidationConstants.MAX_RELEASE_YEAR)
         Integer releaseYear,
 
-        @Min(value = 1, message = "Продолжительность должна быть больше 0")
+        @Min(value = ValidationConstants.MIN_DURATION_MINUTES,
+                message = "Duration must be greater than " + ValidationConstants.MIN_DURATION_MINUTES)
         Integer durationMinutes,
 
         String directors,
 
         WatchStatus status,
 
-        // Эти поля фронтенд будет присылать только для SERIES
-        @Min(value = 1, message = "Количество эпизодов должно быть минимум 1")
+        @Min(value = ValidationConstants.MIN_EPISODES,
+                message = "Total episodes must be at least " + ValidationConstants.MIN_EPISODES)
         Integer totalEpisodes,
 
-        @Min(value = 0, message = "Просмотренные эпизоды не могут быть отрицательными")
+        @Min(value = ValidationConstants.MIN_WATCHED_EPISODES,
+                message = "Watched episodes cannot be less than " + ValidationConstants.MIN_WATCHED_EPISODES)
         Integer watchedEpisodes
 ) {
 }

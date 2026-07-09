@@ -76,15 +76,19 @@ public class MediaService {
     private MediaItemResponse mapToResponse(MediaItem item) {
         Integer totalEps = null;
         Integer watchedEps = null;
+        String contentType = "UNKNOWN";
 
         if (item instanceof Series series) {
+            contentType = "SERIES";
             totalEps = series.getTotalEpisodes();
             watchedEps = series.getWatchedEpisodes();
+        } else if (item instanceof Movie) {
+            contentType = "MOVIE";
         }
 
         return new MediaItemResponse(
                 item.getId(),
-                item.getContentType(),
+                contentType,
                 item.getTitle(),
                 item.getFormat(),
                 item.getReleaseYear(),

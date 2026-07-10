@@ -41,4 +41,20 @@ public class MediaController {
         log.info("REST request to get media item by ID: {}", id);
         return mediaService.getItemById(id);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update media item", description = "Updates existing media item")
+    public MediaItemResponse updateItem(
+            @PathVariable UUID id,
+            @Valid @RequestBody MediaItemRequest request
+    ) {
+        return mediaService.updateItem(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete media item", description = "Soft deletes a media item by ID")
+    public void deleteItem(@PathVariable UUID id) {
+        mediaService.deleteItem(id);
+    }
 }

@@ -99,4 +99,35 @@ public class MediaService {
                 watchedEps
         );
     }
+
+    @Transactional
+    public MediaItemResponse updateItem(UUID id, MediaItemRequest request) {
+        log.info("Updating media item with ID: {}", id);
+
+        MediaItem entity = mediaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Media item not found with ID: " + id));
+
+        entity.setTitle(request.title());
+        entity.setFormat(request.format());
+        entity.setReleaseYear(request.releaseYear());
+        entity.setDurationMinutes(request.durationMinutes());
+        entity.setDirectors(request.directors());
+        entity.setStatus(request.status());
+
+        if (entity instanceof Series series && request.totalEpisodes() != null) {
+            series.setTotalEpisodes(request.totalEpisodes());
+            series.setWatchedEpisodes(request.watchedEpisodes() != null ? request.watchedEpisodes() : 0);
+        }
+
+        return mapToResponse(mediaRepository.save(entity));
+    }
+
+    @Transactional
+    public void deleteItem(UUID id) {
+        log.info("Deleting media item with ID: {}", id);
+        if (!mediaRepository.existsById(id)) {
+            throw new EntityNotFoundException("Media item not found with ID: " + id);
+        }
+        mediaRepository.deleteById(id);
+    }
 }

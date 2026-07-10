@@ -57,4 +57,21 @@ public class MediaController {
     public void deleteItem(@PathVariable UUID id) {
         mediaService.deleteItem(id);
     }
+
+    @PatchMapping("/{id}/progress")
+    @Operation(summary = "Update series progress", description = "Increments or decrements watched episodes. Provide positive or negative delta.")
+    public MediaItemResponse updateProgress(
+            @PathVariable UUID id,
+            @Parameter(description = "Number of episodes to add/subtract") @RequestParam int delta
+    ) {
+        return mediaService.updateSeriesProgress(id, delta);
+    }
+
+    @PostMapping("/{id}/complete")
+    @Operation(summary = "Mark as completed", description = "Marks item as completed and calculates remaining watch time")
+    public MediaItemResponse markAsCompleted(
+            @PathVariable UUID id
+    ) {
+        return mediaService.markAsCompleted(id);
+    }
 }

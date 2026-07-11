@@ -39,6 +39,7 @@ public class MediaController {
     @GetMapping
     @Operation(summary = "Get list of media items", description = "Returns a paginated and filtered list of movies and series")
     public Page<MediaItemResponse> getItems(
+            @Parameter(description = "Filter by content type (MOVIE or SERIES)") @RequestParam(required = false) String contentType,
             @Parameter(description = "Filter by format") @RequestParam(required = false) MediaFormat format,
             @Parameter(description = "Filter by status") @RequestParam(required = false) WatchStatus status,
             @Parameter(description = "Search in title or directors") @RequestParam(required = false) String query,
@@ -46,7 +47,7 @@ public class MediaController {
             @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "50") int size
     ) {
         log.info("REST request to get filtered media items");
-        return mediaService.getFilteredItems(format, status, query, page, size);
+        return mediaService.getFilteredItems(contentType, format, status, query, page, size);
     }
 
     @GetMapping("/{id}")

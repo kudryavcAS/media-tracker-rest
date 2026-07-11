@@ -15,10 +15,14 @@ public final class MediaItemSpecifications {
     private MediaItemSpecifications() {
     }
 
-    public static Specification<MediaItem> withFilters(MediaFormat format, WatchStatus status, String query) {
+    public static Specification<MediaItem> withFilters(String contentType, MediaFormat format, WatchStatus status, String query) {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            if (StringUtils.hasText(contentType)) {
+                predicates.add(cb.equal(cb.upper(root.get("contentType")), contentType.toUpperCase()));
+            }
+            
             if (format != null) {
                 predicates.add(cb.equal(root.get("format"), format));
             }

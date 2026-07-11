@@ -5,10 +5,15 @@ import io.github.kudryavcAS.mediatracker.dto.MediaItemResponse;
 import io.github.kudryavcAS.mediatracker.model.*;
 import io.github.kudryavcAS.mediatracker.repo.MediaItemRepository;
 import io.github.kudryavcAS.mediatracker.repo.WatchLogRepository;
+import io.github.kudryavcAS.mediatracker.repo.spec.MediaItemSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +49,15 @@ public class MediaService {
         return mapToResponse(item);
     }
 
+    @Transactional(readOnly = true)
+    public Page<MediaItemResponse> getFilteredItems(MediaFormat format, WatchStatus status, String query, int page, int size) {
+        log.debug("Fetching items with filters - format: {}, status: {}, query: '{}', page: {}", format, status, query, page);
+
+        Specification<MediaItem> spec = MediaItemSpecifications.withFilters(format, status, query);
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), size);
+
+        return mediaRepository.findAll(spec, pageable).map(MediaService::mapToResponse);
+    }
 
     @Transactional
     public MediaItemResponse updateItem(UUID id, MediaItemRequest request) {
@@ -232,5 +246,4 @@ public class MediaService {
                 watchedEps
         );
     }
-
 }

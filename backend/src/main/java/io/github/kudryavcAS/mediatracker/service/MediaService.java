@@ -78,7 +78,7 @@ public class MediaService {
         entity.setStatus(request.status());
 
         entity.setStatus(request.status() != null ? request.status() : entity.getStatus());
-        
+
         if (entity instanceof Series series && request.totalEpisodes() != null) {
             series.setTotalEpisodes(request.totalEpisodes());
             series.setWatchedEpisodes(request.watchedEpisodes() != null ? request.watchedEpisodes() : 0);
@@ -173,8 +173,6 @@ public class MediaService {
         if (minutes > 0) {
             WatchLog watchLog = new WatchLog();
             watchLog.setMediaItem(item);
-            watchLog.setTitleSnapshot(item.getTitle());
-            watchLog.setFormatSnapshot(item.getFormat());
             watchLog.setWatchedAt(LocalDateTime.now());
             watchLog.setMinutesWatched(minutes);
             watchLog.setEpisodes(item instanceof Movie ? null : deltaEpisodes);

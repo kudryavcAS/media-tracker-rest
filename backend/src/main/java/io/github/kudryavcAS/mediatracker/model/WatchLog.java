@@ -23,13 +23,6 @@ public class WatchLog {
     private MediaItem mediaItem;
 
     @Column(nullable = false)
-    private String titleSnapshot;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MediaFormat formatSnapshot;
-
-    @Column(nullable = false)
     private LocalDateTime watchedAt;
 
     @Column(nullable = false)

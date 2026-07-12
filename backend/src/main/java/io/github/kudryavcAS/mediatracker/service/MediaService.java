@@ -66,6 +66,10 @@ public class MediaService {
         MediaItem entity = mediaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Media item not found with ID: " + id));
 
+        if (!entity.getContentType().equalsIgnoreCase(request.contentType())) {
+            throw new IllegalArgumentException("Content type cannot be changed after creation");
+        }
+
         entity.setTitle(request.title());
         entity.setFormat(request.format());
         entity.setReleaseYear(request.releaseYear());
@@ -73,6 +77,8 @@ public class MediaService {
         entity.setDirectors(request.directors());
         entity.setStatus(request.status());
 
+        entity.setStatus(request.status() != null ? request.status() : entity.getStatus());
+        
         if (entity instanceof Series series && request.totalEpisodes() != null) {
             series.setTotalEpisodes(request.totalEpisodes());
             series.setWatchedEpisodes(request.watchedEpisodes() != null ? request.watchedEpisodes() : 0);

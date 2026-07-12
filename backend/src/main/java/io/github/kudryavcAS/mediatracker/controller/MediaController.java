@@ -2,6 +2,7 @@ package io.github.kudryavcAS.mediatracker.controller;
 
 import io.github.kudryavcAS.mediatracker.dto.MediaItemRequest;
 import io.github.kudryavcAS.mediatracker.dto.MediaItemResponse;
+import io.github.kudryavcAS.mediatracker.dto.PageResponse;
 import io.github.kudryavcAS.mediatracker.model.MediaFormat;
 import io.github.kudryavcAS.mediatracker.model.WatchStatus;
 import io.github.kudryavcAS.mediatracker.service.MediaService;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +38,7 @@ public class MediaController {
 
     @GetMapping
     @Operation(summary = "Get list of media items", description = "Returns a paginated and filtered list of movies and series")
-    public Page<MediaItemResponse> getItems(
+    public PageResponse<MediaItemResponse> getItems(
             @Parameter(description = "Filter by content type (MOVIE or SERIES)") @RequestParam(required = false) String contentType,
             @Parameter(description = "Filter by format") @RequestParam(required = false) MediaFormat format,
             @Parameter(description = "Filter by status") @RequestParam(required = false) WatchStatus status,
@@ -47,7 +47,7 @@ public class MediaController {
             @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "50") int size
     ) {
         log.info("REST request to get filtered media items");
-        return mediaService.getFilteredItems(contentType, format, status, query, page, size);
+        return PageResponse.from(mediaService.getFilteredItems(contentType, format, status, query, page, size));
     }
 
     @GetMapping("/{id}")

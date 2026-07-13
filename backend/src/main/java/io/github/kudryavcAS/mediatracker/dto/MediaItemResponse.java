@@ -3,6 +3,7 @@ package io.github.kudryavcAS.mediatracker.dto;
 import io.github.kudryavcAS.mediatracker.model.MediaFormat;
 import io.github.kudryavcAS.mediatracker.model.WatchStatus;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record MediaItemResponse(
@@ -15,6 +16,7 @@ public record MediaItemResponse(
         String directors,
         WatchStatus status,
         Integer totalEpisodes,
-        Integer watchedEpisodes
+        Integer watchedEpisodes,
+        LocalDateTime createdAt
 ) {
 }

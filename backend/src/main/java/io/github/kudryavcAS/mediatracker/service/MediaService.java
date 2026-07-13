@@ -247,7 +247,8 @@ public class MediaService {
                 item.getDirectors(),
                 item.getStatus(),
                 totalEps,
-                watchedEps
+                watchedEps,
+                item.getCreatedAt()
         );
     }
 }

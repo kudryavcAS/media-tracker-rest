@@ -5,7 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.annotations.SoftDelete;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -15,11 +18,16 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "content_type")
 @SoftDelete(columnName = "is_deleted")
+@EntityListeners(AuditingEntityListener.class)
 public abstract class MediaItem {
 
     @Id
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     private UUID id;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "content_type", insertable = false, updatable = false)
     private String contentType;

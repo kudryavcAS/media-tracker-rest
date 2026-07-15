@@ -3,6 +3,7 @@ package io.github.kudryavcAS.mediatracker.controller;
 import io.github.kudryavcAS.mediatracker.dto.MediaItemRequest;
 import io.github.kudryavcAS.mediatracker.dto.MediaItemResponse;
 import io.github.kudryavcAS.mediatracker.dto.PageResponse;
+import io.github.kudryavcAS.mediatracker.dto.WatchDetailResponse;
 import io.github.kudryavcAS.mediatracker.model.MediaFormat;
 import io.github.kudryavcAS.mediatracker.model.WatchStatus;
 import io.github.kudryavcAS.mediatracker.service.MediaService;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -96,5 +98,14 @@ public class MediaController {
     ) {
         log.info("REST request to mark media item as completed by ID: {}", id);
         return mediaService.markAsCompleted(id);
+    }
+
+    @GetMapping("/{id}/logs")
+    @Operation(summary = "Get watch logs for item", description = "Returns the history of viewings for a specific media item")
+    public List<WatchDetailResponse> getItemWatchLogs(
+            @Parameter(description = "UUID of the media item") @PathVariable UUID id
+    ) {
+        log.info("REST request to get watch logs for media item ID: {}", id);
+        return mediaService.getItemWatchLogs(id);
     }
 }

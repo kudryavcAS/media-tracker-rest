@@ -1,5 +1,6 @@
 package io.github.kudryavcAS.mediatracker.repo;
 
+import io.github.kudryavcAS.mediatracker.model.MediaItem;
 import io.github.kudryavcAS.mediatracker.model.WatchLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +17,7 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
     @Query(value = """
             SELECT TO_CHAR(d.date_series, 'YYYY-MM-DD') as watchDate, 
                    COALESCE(SUM(w.minutes_watched), 0) as totalMinutes,
-                   
+            
                    COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' THEN w.minutes_watched ELSE 0 END), 0) as movieMinutes,
                    COALESCE(SUM(CASE WHEN mi.content_type = 'SERIES' THEN w.minutes_watched ELSE 0 END), 0) as seriesMinutes,
             
@@ -77,4 +78,6 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
             ORDER BY w.watched_at DESC
             """, nativeQuery = true)
     List<WatchLog> findLogsByDateKey(@Param("dateKey") String dateKey, @Param("grouping") String grouping);
+
+    List<WatchLog> findByMediaItemOrderByWatchedAtDesc(MediaItem mediaItem);
 }

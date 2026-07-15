@@ -2,6 +2,7 @@ package io.github.kudryavcAS.mediatracker.service;
 
 import io.github.kudryavcAS.mediatracker.dto.MediaItemRequest;
 import io.github.kudryavcAS.mediatracker.dto.MediaItemResponse;
+import io.github.kudryavcAS.mediatracker.dto.WatchDetailResponse;
 import io.github.kudryavcAS.mediatracker.model.*;
 import io.github.kudryavcAS.mediatracker.repo.MediaItemRepository;
 import io.github.kudryavcAS.mediatracker.repo.WatchLogRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -250,5 +252,27 @@ public class MediaService {
                 watchedEps,
                 item.getCreatedAt()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<WatchDetailResponse> getItemWatchLogs(UUID id) {
+        log.debug("Fetching watch logs for media item ID: {}", id);
+
+        MediaItem item = mediaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Media item not found with ID: " + id));
+
+        return watchLogRepository.findByMediaItemOrderByWatchedAtDesc(item)
+                .stream()
+                .map(logItem -> new WatchDetailResponse(
+                        logItem.getId(),
+                        item.getId(),
+                        item.getTitle(),
+                        item.getContentType(),
+                        item.getFormat(),
+                        logItem.getMinutesWatched(),
+                        logItem.getEpisodes(),
+                        logItem.getWatchedAt()
+                ))
+                .toList();
     }
 }

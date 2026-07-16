@@ -69,15 +69,18 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
     List<ChartDataProjection> getMonthlyActivity(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query(value = """
-            SELECT w.* 
+            SELECT w.id as logId, w.media_item_id as mediaItemId,
+                   mi.title as title, mi.content_type as contentType, mi.format as format,
+                   w.minutes_watched as minutesWatched, w.episodes as episodes, w.watched_at as watchedAt
             FROM watch_log w
-            WHERE 
+            JOIN media_item mi ON w.media_item_id = mi.id
+            WHERE
                 (:grouping = 'DAY' AND TO_CHAR(w.watched_at, 'YYYY-MM-DD') = :dateKey) OR
                 (:grouping = 'WEEK' AND TO_CHAR(date_trunc('week', w.watched_at), 'YYYY-MM-DD') = :dateKey) OR
                 (:grouping = 'MONTH' AND TO_CHAR(w.watched_at, 'YYYY-MM') = :dateKey)
             ORDER BY w.watched_at DESC
             """, nativeQuery = true)
-    List<WatchLog> findLogsByDateKey(@Param("dateKey") String dateKey, @Param("grouping") String grouping);
+    List<WatchDetailProjection> findLogDetailsByDateKey(@Param("dateKey") String dateKey, @Param("grouping") String grouping);
 
     List<WatchLog> findByMediaItemOrderByWatchedAtDesc(MediaItem mediaItem);
 }

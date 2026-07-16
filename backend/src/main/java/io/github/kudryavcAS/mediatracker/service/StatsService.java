@@ -3,6 +3,7 @@ package io.github.kudryavcAS.mediatracker.service;
 import io.github.kudryavcAS.mediatracker.dto.ChartDataResponse;
 import io.github.kudryavcAS.mediatracker.dto.StatisticsResponse;
 import io.github.kudryavcAS.mediatracker.dto.WatchDetailResponse;
+import io.github.kudryavcAS.mediatracker.model.MediaFormat;
 import io.github.kudryavcAS.mediatracker.repo.ChartDataProjection;
 import io.github.kudryavcAS.mediatracker.repo.MediaItemRepository;
 import io.github.kudryavcAS.mediatracker.repo.StatsProjection;
@@ -67,17 +68,17 @@ public class StatsService {
     public List<WatchDetailResponse> getWatchDetails(String dateKey, String grouping) {
         log.debug("Fetching watch details for dateKey: {}, grouping: {}", dateKey, grouping);
 
-        return watchLogRepository.findLogsByDateKey(dateKey, grouping.toUpperCase())
+        return watchLogRepository.findLogDetailsByDateKey(dateKey, grouping.toUpperCase())
                 .stream()
-                .map(log -> new WatchDetailResponse(
-                        log.getId(),
-                        log.getMediaItem().getId(),
-                        log.getMediaItem().getTitle(),
-                        log.getMediaItem().getContentType(),
-                        log.getMediaItem().getFormat(),
-                        log.getMinutesWatched(),
-                        log.getEpisodes(),
-                        log.getWatchedAt()
+                .map(p -> new WatchDetailResponse(
+                        p.getLogId(),
+                        p.getMediaItemId(),
+                        p.getTitle(),
+                        p.getContentType(),
+                        MediaFormat.valueOf(p.getFormat()),
+                        p.getMinutesWatched(),
+                        p.getEpisodes(),
+                        p.getWatchedAt()
                 ))
                 .toList();
     }

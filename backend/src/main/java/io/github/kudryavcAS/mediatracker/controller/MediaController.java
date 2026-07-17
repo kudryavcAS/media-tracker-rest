@@ -14,8 +14,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,13 +31,10 @@ public class MediaController {
     private final MediaService mediaService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new media item", description = "Adds a new movie or series to the database")
-    public MediaItemResponse createItem(
-            @Valid @RequestBody MediaItemRequest request
-    ) {
+    public ResponseEntity<MediaItemResponse> createItem(@Valid @RequestBody MediaItemRequest request) {
         log.info("REST request to create media item: {}", request.title());
-        return mediaService.createItem(request);
+        MediaItemResponse response = mediaService.createItem(request);
+        return ResponseEntity.created(URI.create("/api/v1/media/" + response.id())).body(response);
     }
 
     @GetMapping

@@ -77,7 +77,6 @@ public class MediaService {
         entity.setReleaseYear(request.releaseYear());
         entity.setDurationMinutes(request.durationMinutes());
         entity.setDirectors(request.directors());
-        entity.setStatus(request.status());
 
         entity.setStatus(request.status() != null ? request.status() : entity.getStatus());
 

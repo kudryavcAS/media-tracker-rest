@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
 
     @Query(value = """
-            SELECT TO_CHAR(d.date_series, 'YYYY-MM-DD') as watchDate, 
+            SELECT TO_CHAR(d.date_series, CASE WHEN :unit = 'month' THEN 'YYYY-MM' ELSE 'YYYY-MM-DD' END) as watchDate,
                    COALESCE(SUM(w.minutes_watched), 0) as totalMinutes,
             
                    COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' THEN w.minutes_watched ELSE 0 END), 0) as movieMinutes,
@@ -25,48 +25,21 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
                    COALESCE(SUM(CASE WHEN mi.format = 'ANIME' THEN w.minutes_watched ELSE 0 END), 0) as animeMinutes,
                    COALESCE(SUM(CASE WHEN mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as animationMinutes
             
-            FROM generate_series(CAST(:startDate AS timestamp), CAST(:endDate AS timestamp), interval '1 day') AS d(date_series)
-            LEFT JOIN watch_log w ON DATE(w.watched_at) = DATE(d.date_series)
+            FROM generate_series(
+                     date_trunc(:unit, CAST(:startDate AS timestamp)),
+                     date_trunc(:unit, CAST(:endDate AS timestamp)),
+                     CAST('1 ' || :unit AS interval)
+                 ) AS d(date_series)
+            LEFT JOIN watch_log w ON date_trunc(:unit, w.watched_at) = d.date_series
             LEFT JOIN media_item mi ON w.media_item_id = mi.id
-            GROUP BY d.date_series ORDER BY d.date_series ASC
+            GROUP BY d.date_series
+            ORDER BY d.date_series ASC
             """, nativeQuery = true)
-    List<ChartDataProjection> getDailyActivity(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
-
-    @Query(value = """
-            SELECT TO_CHAR(d.date_series, 'YYYY-MM-DD') as watchDate, 
-                   COALESCE(SUM(w.minutes_watched), 0) as totalMinutes,
-            
-                   COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' THEN w.minutes_watched ELSE 0 END), 0) as movieMinutes,
-                   COALESCE(SUM(CASE WHEN mi.content_type = 'SERIES' THEN w.minutes_watched ELSE 0 END), 0) as seriesMinutes,
-            
-                   COALESCE(SUM(CASE WHEN mi.format = 'LIVE_ACTION' THEN w.minutes_watched ELSE 0 END), 0) as liveActionMinutes,
-                   COALESCE(SUM(CASE WHEN mi.format = 'ANIME' THEN w.minutes_watched ELSE 0 END), 0) as animeMinutes,
-                   COALESCE(SUM(CASE WHEN mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as animationMinutes
-            
-            FROM generate_series(date_trunc('week', CAST(:startDate AS timestamp)), date_trunc('week', CAST(:endDate AS timestamp)), interval '1 week') AS d(date_series)
-            LEFT JOIN watch_log w ON date_trunc('week', w.watched_at) = d.date_series
-            LEFT JOIN media_item mi ON w.media_item_id = mi.id
-            GROUP BY d.date_series ORDER BY d.date_series ASC
-            """, nativeQuery = true)
-    List<ChartDataProjection> getWeeklyActivity(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
-
-    @Query(value = """
-            SELECT TO_CHAR(d.date_series, 'YYYY-MM') as watchDate, 
-                   COALESCE(SUM(w.minutes_watched), 0) as totalMinutes,
-            
-                   COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' THEN w.minutes_watched ELSE 0 END), 0) as movieMinutes,
-                   COALESCE(SUM(CASE WHEN mi.content_type = 'SERIES' THEN w.minutes_watched ELSE 0 END), 0) as seriesMinutes,
-            
-                   COALESCE(SUM(CASE WHEN mi.format = 'LIVE_ACTION' THEN w.minutes_watched ELSE 0 END), 0) as liveActionMinutes,
-                   COALESCE(SUM(CASE WHEN mi.format = 'ANIME' THEN w.minutes_watched ELSE 0 END), 0) as animeMinutes,
-                   COALESCE(SUM(CASE WHEN mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as animationMinutes
-            
-            FROM generate_series(date_trunc('month', CAST(:startDate AS timestamp)), date_trunc('month', CAST(:endDate AS timestamp)), interval '1 month') AS d(date_series)
-            LEFT JOIN watch_log w ON date_trunc('month', w.watched_at) = d.date_series
-            LEFT JOIN media_item mi ON w.media_item_id = mi.id
-            GROUP BY d.date_series ORDER BY d.date_series ASC
-            """, nativeQuery = true)
-    List<ChartDataProjection> getMonthlyActivity(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    List<ChartDataProjection> getActivity(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("unit") String unit
+    );
 
     @Query(value = """
             SELECT w.id as logId, w.media_item_id as mediaItemId,
@@ -80,7 +53,9 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
                 (:grouping = 'MONTH' AND TO_CHAR(w.watched_at, 'YYYY-MM') = :dateKey)
             ORDER BY w.watched_at DESC
             """, nativeQuery = true)
-    List<WatchDetailProjection> findLogDetailsByDateKey(@Param("dateKey") String dateKey, @Param("grouping") String grouping);
+    List<WatchDetailProjection> findLogDetailsByDateKey(
+            @Param("dateKey") String dateKey, 
+            @Param("grouping") String grouping);
 
     List<WatchLog> findByMediaItemOrderByWatchedAtDesc(MediaItem mediaItem);
 }

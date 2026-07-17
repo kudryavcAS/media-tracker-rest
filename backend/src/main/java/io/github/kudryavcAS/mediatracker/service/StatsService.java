@@ -50,11 +50,13 @@ public class StatsService {
         LocalDateTime startTime = start.atStartOfDay();
         LocalDateTime endTime = end.atTime(23, 59, 59);
 
-        List<ChartDataProjection> rawData = switch (grouping.toUpperCase()) {
-            case "WEEK" -> watchLogRepository.getWeeklyActivity(startTime, endTime);
-            case "MONTH" -> watchLogRepository.getMonthlyActivity(startTime, endTime);
-            default -> watchLogRepository.getDailyActivity(startTime, endTime);
+        String unit = switch (grouping.toUpperCase()) {
+            case "WEEK" -> "week";
+            case "MONTH" -> "month";
+            default -> "day";
         };
+
+        List<ChartDataProjection> rawData = watchLogRepository.getActivity(startTime, endTime, unit);
 
         return rawData.stream()
                 .map(d -> new ChartDataResponse(

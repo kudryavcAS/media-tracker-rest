@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -50,4 +51,13 @@ public interface MediaItemRepository extends JpaRepository<MediaItem, UUID>, Jpa
             WHERE is_deleted = false
             """, nativeQuery = true)
     StatsProjection getOverallStatistics();
+
+    @org.springframework.data.jpa.repository.Query(value = """
+            SELECT id, content_type as contentType, title, format, release_year as releaseYear,
+                   duration_minutes as durationMinutes, directors, status,
+                   total_episodes as totalEpisodes, watched_episodes as watchedEpisodes,
+                   created_at as createdAt, is_deleted as isDeleted
+            FROM media_item
+            """, nativeQuery = true)
+    List<MediaItemBackupProjection> findAllIncludingDeleted();
 }

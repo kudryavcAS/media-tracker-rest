@@ -28,7 +28,7 @@ public class StatsController {
 
     @GetMapping
     @Operation(summary = "Get overall statistics",
-            description = "Aggregated snapshot of the current library state (includes watch history predating the app; excludes deleted items)")
+            description = "Aggregated snapshot of the current library state (includes watch history predating the app; excludes archived items)")
     public StatisticsResponse getOverallStats() {
         log.info("REST request to get overall statistics");
         return statsService.getOverallStatistics();
@@ -36,7 +36,7 @@ public class StatsController {
 
     @GetMapping("/chart")
     @Operation(summary = "Get chart data",
-            description = "Time-distributed watch activity based on logged events only (includes deleted items; data exists only from the point logging started)")
+            description = "Time-distributed watch activity based on logged events only. Includes archived items (archiving does not remove logs); watch logs of deleted items no longer exist, since deletion cascades. Data exists only from the point logging started.")
     public List<ChartDataResponse> getChartData(
             @Parameter(description = "Start date (YYYY-MM-DD)") @RequestParam LocalDate start,
             @Parameter(description = "End date (YYYY-MM-DD)") @RequestParam LocalDate end,

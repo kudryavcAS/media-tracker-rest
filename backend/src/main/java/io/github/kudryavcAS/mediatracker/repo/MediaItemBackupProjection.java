@@ -15,5 +15,4 @@ public interface MediaItemBackupProjection {
     Integer getTotalEpisodes();
     Integer getWatchedEpisodes();
     LocalDateTime getCreatedAt();
-    Boolean getIsDeleted();
 }

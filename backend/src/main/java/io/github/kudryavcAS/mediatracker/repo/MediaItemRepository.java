@@ -48,7 +48,7 @@ public interface MediaItemRepository extends JpaRepository<MediaItem, UUID>, Jpa
                          ELSE 0 END 
                     ELSE 0 END), 0) as animationWatched
             FROM media_item
-            WHERE is_deleted = false
+            WHERE archived = false
             """, nativeQuery = true)
     StatsProjection getOverallStatistics();
 
@@ -56,7 +56,7 @@ public interface MediaItemRepository extends JpaRepository<MediaItem, UUID>, Jpa
             SELECT id, content_type as contentType, title, format, release_year as releaseYear,
                    duration_minutes as durationMinutes, directors, status,
                    total_episodes as totalEpisodes, watched_episodes as watchedEpisodes,
-                   created_at as createdAt, is_deleted as isDeleted
+                   created_at as createdAt
             FROM media_item
             """, nativeQuery = true)
     List<MediaItemBackupProjection> findAllIncludingDeleted();

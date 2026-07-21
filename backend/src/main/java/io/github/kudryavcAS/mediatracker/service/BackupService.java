@@ -43,7 +43,7 @@ public class BackupService {
                         p.getTotalEpisodes(),
                         p.getWatchedEpisodes(),
                         p.getCreatedAt(),
-                        Boolean.TRUE.equals(p.getIsDeleted())
+                        Boolean.FALSE
                 ))
                 .toList();
 

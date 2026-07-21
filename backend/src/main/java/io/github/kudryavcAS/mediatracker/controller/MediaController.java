@@ -73,7 +73,7 @@ public class MediaController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete media item", description = "Soft deletes a media item by ID")
+    @Operation(summary = "Delete media item", description = "Permanently deletes the item and all its watch logs. This action cannot be undone.")
     public void deleteItem(
             @Parameter(description = "UUID of the media item") @PathVariable UUID id
     ) {

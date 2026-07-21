@@ -22,7 +22,6 @@ public class WatchLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_item_id", nullable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     private MediaItem mediaItem;
 
     @Column(nullable = false)

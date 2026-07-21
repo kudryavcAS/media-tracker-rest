@@ -44,11 +44,12 @@ public class MediaController {
             @Parameter(description = "Filter by format") @RequestParam(required = false) MediaFormat format,
             @Parameter(description = "Filter by status") @RequestParam(required = false) WatchStatus status,
             @Parameter(description = "Search in title or directors") @RequestParam(required = false) String query,
+            @Parameter(description = "Include archived items in results") @RequestParam(defaultValue = "false") boolean includeArchived,
             @Parameter(description = "Page number (starts from 1)") @RequestParam(defaultValue = "1") int page,
             @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "50") int size
     ) {
         log.info("REST request to get filtered media items");
-        return PageResponse.from(mediaService.getFilteredItems(contentType, format, status, query, page, size));
+        return PageResponse.from(mediaService.getFilteredItems(contentType, format, status, query, includeArchived, page, size));
     }
 
     @GetMapping("/{id}")
@@ -88,6 +89,24 @@ public class MediaController {
     ) {
         log.info("REST request to update progress for media item by ID: {}", id);
         return mediaService.updateSeriesProgress(id, delta);
+    }
+
+    @PatchMapping("/{id}/archive")
+    @Operation(summary = "Archive media item", description = "Hides the item from the default library view without deleting it or its watch logs")
+    public MediaItemResponse archiveItem(
+            @Parameter(description = "UUID of the media item") @PathVariable UUID id
+    ) {
+        log.info("REST request to archive media item by ID: {}", id);
+        return mediaService.setArchived(id, true);
+    }
+
+    @PatchMapping("/{id}/unarchive")
+    @Operation(summary = "Unarchive media item", description = "Restores the item to the default library view")
+    public MediaItemResponse unarchiveItem(
+            @Parameter(description = "UUID of the media item") @PathVariable UUID id
+    ) {
+        log.info("REST request to unarchive media item by ID: {}", id);
+        return mediaService.setArchived(id, false);
     }
 
     @PostMapping("/{id}/complete")

@@ -48,4 +48,7 @@ public abstract class MediaItem {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private WatchStatus status = WatchStatus.PLANNED;
+
+    @Column(nullable = false)
+    private boolean archived = false;
 }

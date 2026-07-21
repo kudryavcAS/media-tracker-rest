@@ -52,10 +52,11 @@ public class MediaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MediaItemResponse> getFilteredItems(String contentType, MediaFormat format, WatchStatus status, String query, int page, int size) {
-        log.debug("Fetching items with filters - type: {}, format: {}, status: {}, query: '{}', page: {}", contentType, format, status, query, page);
+    public Page<MediaItemResponse> getFilteredItems(String contentType, MediaFormat format, WatchStatus status, String query, boolean includeArchived, int page, int size) {
+        log.debug("Fetching items with filters - type: {}, format: {}, status: {}, query: '{}', includeArchived: {}, page: {}",
+                contentType, format, status, query, includeArchived, page);
 
-        Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, format, status, query);
+        Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, format, status, query, includeArchived);
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), size);
 
         return mediaRepository.findAll(spec, pageable).map(MediaService::mapToResponse);
@@ -249,7 +250,8 @@ public class MediaService {
                 item.getStatus(),
                 totalEps,
                 watchedEps,
-                item.getCreatedAt()
+                item.getCreatedAt(),
+                item.isArchived()
         );
     }
 
@@ -273,5 +275,16 @@ public class MediaService {
                         logItem.getWatchedAt()
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public MediaItemResponse setArchived(UUID id, boolean archived) {
+        log.info("Setting archived={} for media item ID: {}", archived, id);
+
+        MediaItem entity = mediaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Media item not found with ID: " + id));
+
+        entity.setArchived(archived);
+        return mapToResponse(mediaRepository.save(entity));
     }
 }

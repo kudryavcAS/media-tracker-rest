@@ -17,6 +17,7 @@ public record MediaItemResponse(
         WatchStatus status,
         Integer totalEpisodes,
         Integer watchedEpisodes,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        boolean archived
 ) {
 }

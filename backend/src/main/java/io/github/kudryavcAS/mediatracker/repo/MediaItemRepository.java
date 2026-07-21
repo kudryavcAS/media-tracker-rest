@@ -51,13 +51,4 @@ public interface MediaItemRepository extends JpaRepository<MediaItem, UUID>, Jpa
             WHERE archived = false
             """, nativeQuery = true)
     StatsProjection getOverallStatistics();
-
-    @org.springframework.data.jpa.repository.Query(value = """
-            SELECT id, content_type as contentType, title, format, release_year as releaseYear,
-                   duration_minutes as durationMinutes, directors, status,
-                   total_episodes as totalEpisodes, watched_episodes as watchedEpisodes,
-                   created_at as createdAt
-            FROM media_item
-            """, nativeQuery = true)
-    List<MediaItemBackupProjection> findAllIncludingDeleted();
 }

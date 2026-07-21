@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,20 +29,20 @@ public class BackupService {
     public byte[] exportData() {
         log.info("Starting database export to JSON...");
 
-        List<BackupDataDto.MediaItemBackupDto> itemDtos = mediaRepository.findAllIncludingDeleted().stream()
-                .map(p -> new BackupDataDto.MediaItemBackupDto(
-                        p.getId(),
-                        p.getContentType(),
-                        p.getTitle(),
-                        MediaFormat.valueOf(p.getFormat()),
-                        p.getReleaseYear(),
-                        p.getDurationMinutes(),
-                        p.getDirectors(),
-                        WatchStatus.valueOf(p.getStatus()),
-                        p.getTotalEpisodes(),
-                        p.getWatchedEpisodes(),
-                        p.getCreatedAt(),
-                        Boolean.FALSE
+        List<BackupDataDto.MediaItemBackupDto> itemDtos = mediaRepository.findAll().stream()
+                .map(item -> new BackupDataDto.MediaItemBackupDto(
+                        item.getId(),
+                        item.getContentType(),
+                        item.getTitle(),
+                        item.getFormat(),
+                        item.getReleaseYear(),
+                        item.getDurationMinutes(),
+                        item.getDirectors(),
+                        item.getStatus(),
+                        item instanceof Series s ? s.getTotalEpisodes() : null,
+                        item instanceof Series s ? s.getWatchedEpisodes() : null,
+                        item.getCreatedAt(),
+                        item.isArchived()
                 ))
                 .toList();
 
@@ -85,7 +84,7 @@ public class BackupService {
         List<MediaItem> itemsToSave = backup.mediaItems().stream()
                 .map(dto -> {
                     MediaItem item;
-                    if ("MOVIE".equals(dto.contentType())) {
+                    if ("MOVIE".equalsIgnoreCase(dto.contentType())) {
                         item = new Movie();
                     } else {
                         Series series = new Series();
@@ -101,6 +100,7 @@ public class BackupService {
                     item.setDirectors(dto.directors());
                     item.setStatus(dto.status());
                     item.setCreatedAt(dto.createdAt());
+                    item.setArchived(dto.archived());
                     return item;
                 })
                 .toList();
@@ -121,18 +121,6 @@ public class BackupService {
                 .toList();
 
         watchLogRepository.saveAll(logsToSave);
-
-        List<UUID> toSoftDelete = backup.mediaItems().stream()
-                .filter(BackupDataDto.MediaItemBackupDto::isDeleted)
-                .map(BackupDataDto.MediaItemBackupDto::id)
-                .toList();
-
-        if (!toSoftDelete.isEmpty()) {
-            watchLogRepository.flush();
-            toSoftDelete.forEach(mediaRepository::deleteById);
-        }
-
-        log.info("Successfully imported {} items ({} soft-deleted) and {} logs.",
-                itemsToSave.size(), toSoftDelete.size(), logsToSave.size());
+        log.info("Successfully imported {} items and {} logs.", itemsToSave.size(), logsToSave.size());
     }
 }

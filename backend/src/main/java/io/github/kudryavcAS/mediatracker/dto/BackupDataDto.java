@@ -23,7 +23,7 @@ public record BackupDataDto(
             Integer totalEpisodes,
             Integer watchedEpisodes,
             LocalDateTime createdAt,
-            boolean isDeleted
+            boolean archived
     ) {
     }
 

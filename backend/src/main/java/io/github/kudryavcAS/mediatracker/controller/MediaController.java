@@ -109,7 +109,7 @@ public class MediaController {
         return mediaService.setArchived(id, false);
     }
 
-    @PostMapping("/{id}/complete")
+    @PatchMapping("/{id}/complete")
     @Operation(summary = "Mark as completed", description = "Marks item as completed and calculates remaining watch time")
     public MediaItemResponse markAsCompleted(
             @Parameter(description = "UUID of the media item") @PathVariable UUID id

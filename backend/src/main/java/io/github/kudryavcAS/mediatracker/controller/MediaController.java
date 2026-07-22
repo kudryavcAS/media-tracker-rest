@@ -31,6 +31,7 @@ public class MediaController {
     private final MediaService mediaService;
 
     @PostMapping
+    @Operation(summary = "Create a new media item", description = "Adds a new movie or series to the database")
     public ResponseEntity<MediaItemResponse> createItem(@Valid @RequestBody MediaItemRequest request) {
         log.info("REST request to create media item: {}", request.title());
         MediaItemResponse response = mediaService.createItem(request);

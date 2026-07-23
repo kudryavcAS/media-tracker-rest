@@ -99,7 +99,7 @@ public class MediaService {
     }
 
     @Transactional
-    public MediaItemResponse updateSeriesProgress(UUID id, int delta) {
+    public MediaItemResponse updateSeriesProgress(UUID id, int delta, LocalDateTime watchedAt) {
         log.info("Updating progress for media item ID: {}, delta: {}", id, delta);
 
         MediaItem entity = mediaRepository.findById(id)
@@ -120,7 +120,7 @@ public class MediaService {
         int actualDelta = newWatched - currentWatched;
 
         if (actualDelta > 0) {
-            logWatchEvent(series, actualDelta);
+            logWatchEvent(series, actualDelta, watchedAt);
         }
 
         series.setWatchedEpisodes(newWatched);
@@ -130,7 +130,7 @@ public class MediaService {
     }
 
     @Transactional
-    public MediaItemResponse markAsCompleted(UUID id) {
+    public MediaItemResponse markAsCompleted(UUID id, LocalDateTime watchedAt) {
         log.info("Marking media item as completed, ID: {}", id);
 
         MediaItem entity = mediaRepository.findById(id)
@@ -138,13 +138,13 @@ public class MediaService {
 
         if (entity.getStatus() != WatchStatus.COMPLETED) {
             if (entity instanceof Movie) {
-                logWatchEvent(entity, 1);
+                logWatchEvent(entity, 1, watchedAt);
             } else if (entity instanceof Series series) {
                 int current = series.getWatchedEpisodes() != null ? series.getWatchedEpisodes() : 0;
                 int total = series.getTotalEpisodes() != null && series.getTotalEpisodes() > 0 ? series.getTotalEpisodes() : 1;
 
                 if (current < total) {
-                    logWatchEvent(series, total - current);
+                    logWatchEvent(series, total - current, watchedAt);
                     series.setWatchedEpisodes(total);
                 }
             }
@@ -167,20 +167,24 @@ public class MediaService {
         }
     }
 
-    private void logWatchEvent(MediaItem item, int deltaEpisodes) {
+    private void logWatchEvent(MediaItem item, int deltaEpisodes, LocalDateTime watchedAt) {
         if (deltaEpisodes <= 0) return;
 
         int minutes = getMinutes(item, deltaEpisodes);
 
+        if (watchedAt != null && watchedAt.isAfter(LocalDateTime.now())) {
+            throw new IllegalArgumentException("watchedAt cannot be in the future");
+        }
+        
         if (minutes > 0) {
             WatchLog watchLog = new WatchLog();
             watchLog.setMediaItem(item);
-            watchLog.setWatchedAt(LocalDateTime.now());
+            watchLog.setWatchedAt(watchedAt != null ? watchedAt : LocalDateTime.now());
             watchLog.setMinutesWatched(minutes);
             watchLog.setEpisodes(item instanceof Movie ? null : deltaEpisodes);
 
             watchLogRepository.save(watchLog);
-            log.info("Logged watch event: {} mins for '{}'", minutes, item.getTitle());
+            log.info("Logged watch event: {} mins for '{}' at {}", minutes, item.getTitle(), watchLog.getWatchedAt());
         }
     }
 

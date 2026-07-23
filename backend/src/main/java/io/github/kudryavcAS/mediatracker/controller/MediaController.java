@@ -13,11 +13,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,10 +88,23 @@ public class MediaController {
     @Operation(summary = "Update series progress", description = "Increments or decrements watched episodes. Provide positive or negative delta.")
     public MediaItemResponse updateProgress(
             @Parameter(description = "UUID of the media item") @PathVariable UUID id,
-            @Parameter(description = "Number of episodes to add/subtract") @RequestParam int delta
+            @Parameter(description = "Number of episodes to add/subtract") @RequestParam int delta,
+            @Parameter(description = "When you actually watched this (defaults to now if omitted)")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime watchedAt
     ) {
         log.info("REST request to update progress for media item by ID: {}", id);
-        return mediaService.updateSeriesProgress(id, delta);
+        return mediaService.updateSeriesProgress(id, delta, watchedAt);
+    }
+
+    @PostMapping("/{id}/complete")
+    @Operation(summary = "Mark as completed", description = "Marks item as completed and calculates remaining watch time")
+    public MediaItemResponse markAsCompleted(
+            @Parameter(description = "UUID of the media item") @PathVariable UUID id,
+            @Parameter(description = "When you actually finished watching this (defaults to now if omitted)")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime watchedAt
+    ) {
+        log.info("REST request to mark media item as completed by ID: {}", id);
+        return mediaService.markAsCompleted(id, watchedAt);
     }
 
     @PatchMapping("/{id}/archive")
@@ -108,15 +123,6 @@ public class MediaController {
     ) {
         log.info("REST request to unarchive media item by ID: {}", id);
         return mediaService.setArchived(id, false);
-    }
-
-    @PatchMapping("/{id}/complete")
-    @Operation(summary = "Mark as completed", description = "Marks item as completed and calculates remaining watch time")
-    public MediaItemResponse markAsCompleted(
-            @Parameter(description = "UUID of the media item") @PathVariable UUID id
-    ) {
-        log.info("REST request to mark media item as completed by ID: {}", id);
-        return mediaService.markAsCompleted(id);
     }
 
     @GetMapping("/{id}/logs")

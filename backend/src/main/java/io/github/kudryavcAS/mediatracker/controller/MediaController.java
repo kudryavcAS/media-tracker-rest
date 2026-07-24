@@ -11,11 +11,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -27,6 +30,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/media")
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "Media Items", description = "Endpoints for managing movies and series")
 public class MediaController {
 
@@ -49,7 +53,8 @@ public class MediaController {
             @Parameter(description = "Search in title or directors") @RequestParam(required = false) String query,
             @Parameter(description = "Include archived items in results") @RequestParam(defaultValue = "false") boolean includeArchived,
             @Parameter(description = "Page number (starts from 1)") @RequestParam(defaultValue = "1") int page,
-            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "50") int size
+            @Parameter(description = "Number of items per page (max 200)")
+            @RequestParam(defaultValue = "50") @Max(200) @Positive int size
     ) {
         log.info("REST request to get filtered media items");
         return PageResponse.from(mediaService.getFilteredItems(contentType, format, status, query, includeArchived, page, size));

@@ -65,40 +65,29 @@ public class BackupService {
     }
 
     @Transactional
-    public void importData(org.springframework.web.multipart.MultipartFile file, boolean overwrite) {
-        log.info("Starting database import. Overwrite mode: {}", overwrite);
+    public void importData(MultipartFile file) {
+        log.info("Starting database import (full restore)...");
 
-        io.github.kudryavcAS.mediatracker.dto.BackupDataDto backup;
+        BackupDataDto backup;
         try {
-            backup = objectMapper.readValue(file.getInputStream(), io.github.kudryavcAS.mediatracker.dto.BackupDataDto.class);
-        } catch (java.io.IOException e) {
+            backup = objectMapper.readValue(file.getInputStream(), BackupDataDto.class);
+        } catch (IOException e) {
             log.error("Failed to parse backup file", e);
             throw new IllegalArgumentException("Invalid backup file format", e);
         }
 
-        if (overwrite) {
-            log.warn("Truncating all tables for full restore...");
-            jdbcTemplate.execute("TRUNCATE TABLE watch_log, media_item CASCADE");
-        }
+        log.warn("Truncating all tables for full restore...");
+        jdbcTemplate.execute("TRUNCATE TABLE watch_log, media_item CASCADE");
 
         log.info("Inserting media items via native SQL batch...");
         jdbcTemplate.batchUpdate(
                 """
-                        INSERT INTO media_item 
-                            (id, 
-                             content_type, 
-                             title, 
-                             format, 
-                             release_year, 
-                             duration_minutes, 
-                             directors, 
-                             status, 
-                             total_episodes, 
-                             watched_episodes, 
-                             created_at, 
-                             archived)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        """,
+                        INSERT INTO media_item (
+                                                id, content_type, title, 
+                                                format, release_year, duration_minutes, 
+                                                directors, status, total_episodes, 
+                                                watched_episodes, created_at, archived) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 backup.mediaItems(),
                 100,
                 (ps, dto) -> {

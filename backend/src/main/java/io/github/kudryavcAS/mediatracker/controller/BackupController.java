@@ -39,13 +39,12 @@ public class BackupController {
     }
 
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Import database", description = "Uploads a JSON file to restore the database")
+    @Operation(summary = "Import database", description = "Wipes all existing data and restores it from a JSON backup file. Intended for moving to a new device/environment, not for merging data from multiple sources.")
     public ResponseEntity<Void> importData(
-            @Parameter(description = "JSON backup file") @RequestParam("file") MultipartFile file,
-            @Parameter(description = "Overwrite existing database?") @RequestParam(defaultValue = "false") boolean overwrite
+            @Parameter(description = "JSON backup file") @RequestParam("file") MultipartFile file
     ) {
         log.info("REST request to import database");
-        backupService.importData(file, overwrite);
+        backupService.importData(file);
         return ResponseEntity.ok().build();
     }
 }

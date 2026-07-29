@@ -15,7 +15,10 @@ import java.util.UUID;
 public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
 
     @Query(value = """
-            SELECT TO_CHAR(d.date_series, CASE WHEN :unit = 'month' THEN 'YYYY-MM' ELSE 'YYYY-MM-DD' END) as watchDate,
+            SELECT TO_CHAR(d.date_series, CASE 
+                            WHEN :unit = 'year' THEN 'YYYY'
+                            WHEN :unit = 'month' THEN 'YYYY-MM' 
+                            ELSE 'YYYY-MM-DD' END) as watchDate,
                    COALESCE(SUM(w.minutes_watched), 0) as totalMinutes,
             
                    COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' THEN w.minutes_watched ELSE 0 END), 0) as movieMinutes,
@@ -50,11 +53,12 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
             WHERE
                 (:grouping = 'DAY' AND TO_CHAR(w.watched_at, 'YYYY-MM-DD') = :dateKey) OR
                 (:grouping = 'WEEK' AND TO_CHAR(date_trunc('week', w.watched_at), 'YYYY-MM-DD') = :dateKey) OR
-                (:grouping = 'MONTH' AND TO_CHAR(w.watched_at, 'YYYY-MM') = :dateKey)
+                (:grouping = 'MONTH' AND TO_CHAR(w.watched_at, 'YYYY-MM') = :dateKey) OR
+                (:grouping = 'YEAR' AND TO_CHAR(w.watched_at, 'YYYY') = :dateKey)
             ORDER BY w.watched_at DESC
             """, nativeQuery = true)
     List<WatchDetailProjection> findLogDetailsByDateKey(
-            @Param("dateKey") String dateKey, 
+            @Param("dateKey") String dateKey,
             @Param("grouping") String grouping);
 
     List<WatchLog> findByMediaItemOrderByWatchedAtDesc(MediaItem mediaItem);

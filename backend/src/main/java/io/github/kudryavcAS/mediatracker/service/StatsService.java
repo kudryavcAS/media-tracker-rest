@@ -53,6 +53,7 @@ public class StatsService {
         String unit = switch (grouping.toUpperCase()) {
             case "WEEK" -> "week";
             case "MONTH" -> "month";
+            case "YEAR" -> "year";
             default -> "day";
         };
 

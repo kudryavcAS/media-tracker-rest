@@ -40,7 +40,7 @@ public class StatsController {
     public List<ChartDataResponse> getChartData(
             @Parameter(description = "Start date (YYYY-MM-DD)") @RequestParam LocalDate start,
             @Parameter(description = "End date (YYYY-MM-DD)") @RequestParam LocalDate end,
-            @Parameter(description = "Grouping period (DAY, WEEK, MONTH)") @RequestParam(defaultValue = "DAY") String grouping
+            @Parameter(description = "Grouping period (DAY, WEEK, MONTH, YEAR)") @RequestParam(defaultValue = "DAY") String grouping
     ) {
         log.info("REST request to get chart data");
         return statsService.getChartData(start, end, grouping);
@@ -51,7 +51,7 @@ public class StatsController {
             description = "Returns specific watch logs for a given date period")
     public List<WatchDetailResponse> getWatchDetails(
             @Parameter(description = "Date key (e.g. 2026-07-15)") @RequestParam String dateKey,
-            @Parameter(description = "Grouping period (DAY, WEEK, MONTH)") @RequestParam(defaultValue = "DAY") String grouping
+            @Parameter(description = "Grouping period (DAY, WEEK, MONTH, YEAR)") @RequestParam(defaultValue = "DAY") String grouping
     ) {
         log.info("REST request to get watch details");
         return statsService.getWatchDetails(dateKey, grouping);

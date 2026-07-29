@@ -102,4 +102,23 @@ class StatsServiceIntegrationTest extends AbstractIntegrationTest {
         assertThat(chartAfterDelete).hasSize(1);
         assertThat(chartAfterDelete.get(0).totalMinutes()).isZero();
     }
+
+    @Test
+    void chartDataSupportsYearlyGrouping() {
+        MediaItemResponse movie = mediaService.createItem(new MediaItemRequest(
+                "MOVIE", "Interstellar", MediaFormat.LIVE_ACTION,
+                2014, 169, "Christopher Nolan", WatchStatus.PLANNED, null, null
+        ));
+        mediaService.markAsCompleted(movie.id(), LocalDateTime.of(2026, 3, 10, 20, 0));
+
+        entityManager.flush();
+        entityManager.clear();
+
+        List<ChartDataResponse> chart = statsService.getChartData(
+                LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31), "YEAR");
+
+        assertThat(chart).hasSize(1);
+        assertThat(chart.get(0).watchDate()).isEqualTo("2026");
+        assertThat(chart.get(0).totalMinutes()).isEqualTo(169);
+    }
 }

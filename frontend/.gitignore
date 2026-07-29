@@ -30,3 +30,7 @@ dist-ssr
 
 # OS files
 Thumbs.db
+
+### AI Export tools ###
+export_for_ai.py
+ai_context.txt

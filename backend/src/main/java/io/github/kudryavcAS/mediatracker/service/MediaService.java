@@ -52,11 +52,11 @@ public class MediaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MediaItemResponse> getFilteredItems(String contentType, MediaFormat format, WatchStatus status, String query, boolean includeArchived, int page, int size) {
-        log.debug("Fetching items with filters - type: {}, format: {}, status: {}, query: '{}', includeArchived: {}, page: {}",
-                contentType, format, status, query, includeArchived, page);
+    public Page<MediaItemResponse> getFilteredItems(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean includeArchived, int page, int size) {
+        log.debug("Fetching items with filters - type: {}, formats: {}, status: {}, query: '{}', includeArchived: {}, page: {}",
+                contentType, formats, status, query, includeArchived, page);
 
-        Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, format, status, query, includeArchived);
+        Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, formats, status, query, includeArchived);
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), size);
 
         return mediaRepository.findAll(spec, pageable).map(MediaService::mapToResponse);

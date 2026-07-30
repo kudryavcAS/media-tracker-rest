@@ -15,7 +15,7 @@ public final class MediaItemSpecifications {
     private MediaItemSpecifications() {
     }
 
-    public static Specification<MediaItem> withFilters(String contentType, MediaFormat format, WatchStatus status, String query, boolean includeArchived) {
+    public static Specification<MediaItem> withFilters(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean includeArchived) {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -23,8 +23,8 @@ public final class MediaItemSpecifications {
                 predicates.add(cb.equal(cb.upper(root.get("contentType")), contentType.toUpperCase()));
             }
 
-            if (format != null) {
-                predicates.add(cb.equal(root.get("format"), format));
+            if (formats != null && !formats.isEmpty()) {
+                predicates.add(root.get("format").in(formats));
             }
 
             if (status != null) {

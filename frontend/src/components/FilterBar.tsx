@@ -2,11 +2,11 @@ import {Search} from 'lucide-react';
 
 interface FilterBarProps {
     contentType?: string;
-    format?: string;
+    formats: string[];
     status?: string;
     query: string;
     onContentTypeChange: (v?: string) => void;
-    onFormatChange: (v?: string) => void;
+    onFormatsChange: (v: string[]) => void;
     onStatusChange: (v?: string) => void;
     onQueryChange: (v: string) => void;
 }
@@ -34,34 +34,37 @@ function ToggleButton({
 
 export function FilterBar({
                               contentType,
-                              format,
+                              formats,
                               status,
                               query,
                               onContentTypeChange,
-                              onFormatChange,
+                              onFormatsChange,
                               onStatusChange,
                               onQueryChange,
                           }: FilterBarProps) {
-    function toggle(current: string | undefined, value: string, onChange: (v?: string) => void) {
+    function toggleSingle(current: string | undefined, value: string, onChange: (v?: string) => void) {
         onChange(current === value ? undefined : value);
+    }
+
+    function toggleInArray(value: string) {
+        onFormatsChange(formats.includes(value) ? formats.filter((f) => f !== value) : [...formats, value]);
     }
 
     return (
         <div className="bg-white rounded-xl shadow-sm p-3 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1 flex-wrap">
                 <ToggleButton label="Movies" active={contentType === 'MOVIE'}
-                              onClick={() => toggle(contentType, 'MOVIE', onContentTypeChange)}/>
+                              onClick={() => toggleSingle(contentType, 'MOVIE', onContentTypeChange)}/>
                 <ToggleButton label="Series" active={contentType === 'SERIES'}
-                              onClick={() => toggle(contentType, 'SERIES', onContentTypeChange)}/>
+                              onClick={() => toggleSingle(contentType, 'SERIES', onContentTypeChange)}/>
 
                 <div className="w-px h-5 bg-gray-200 mx-2"/>
 
-                <ToggleButton label="Anime" active={format === 'ANIME'}
-                              onClick={() => toggle(format, 'ANIME', onFormatChange)}/>
-                <ToggleButton label="Animation" active={format === 'ANIMATION'}
-                              onClick={() => toggle(format, 'ANIMATION', onFormatChange)}/>
-                <ToggleButton label="Live Action" active={format === 'LIVE_ACTION'}
-                              onClick={() => toggle(format, 'LIVE_ACTION', onFormatChange)}/>
+                <ToggleButton label="Anime" active={formats.includes('ANIME')} onClick={() => toggleInArray('ANIME')}/>
+                <ToggleButton label="Animation" active={formats.includes('ANIMATION')}
+                              onClick={() => toggleInArray('ANIMATION')}/>
+                <ToggleButton label="Live Action" active={formats.includes('LIVE_ACTION')}
+                              onClick={() => toggleInArray('LIVE_ACTION')}/>
             </div>
 
             <div className="flex items-center gap-2">

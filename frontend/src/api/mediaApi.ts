@@ -7,7 +7,7 @@ export type PageResponseMediaItemResponse = components['schemas']['PageResponseM
 
 export interface GetMediaItemsParams {
     contentType?: string;
-    format?: string;
+    format?: string[];
     status?: string;
     query?: string;
     includeArchived?: boolean;
@@ -15,8 +15,23 @@ export interface GetMediaItemsParams {
     size?: number;
 }
 
+function toSearchParams(params: GetMediaItemsParams): URLSearchParams {
+    const usp = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+        if (value === undefined || value === null) return;
+        if (Array.isArray(value)) {
+            value.forEach((v) => usp.append(key, String(v)));
+        } else {
+            usp.append(key, String(value));
+        }
+    });
+    return usp;
+}
+
 export async function getMediaItems(params?: GetMediaItemsParams): Promise<PageResponseMediaItemResponse> {
-    const response = await apiClient.get('/api/v1/media', { params });
+    const response = await apiClient.get('/api/v1/media', {
+        params: params ? toSearchParams(params) : undefined,
+    });
     return response.data;
 }
 

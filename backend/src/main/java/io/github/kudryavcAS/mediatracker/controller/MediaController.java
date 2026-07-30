@@ -48,7 +48,7 @@ public class MediaController {
     @Operation(summary = "Get list of media items", description = "Returns a paginated and filtered list of movies and series")
     public PageResponse<MediaItemResponse> getItems(
             @Parameter(description = "Filter by content type (MOVIE or SERIES)") @RequestParam(required = false) String contentType,
-            @Parameter(description = "Filter by format") @RequestParam(required = false) MediaFormat format,
+            @Parameter(description = "Filter by format (repeat param for multiple, e.g. format=ANIME&format=ANIMATION)") @RequestParam(required = false) List<MediaFormat> format,
             @Parameter(description = "Filter by status") @RequestParam(required = false) WatchStatus status,
             @Parameter(description = "Search in title or directors") @RequestParam(required = false) String query,
             @Parameter(description = "Include archived items in results") @RequestParam(defaultValue = "false") boolean includeArchived,

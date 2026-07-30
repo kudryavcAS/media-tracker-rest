@@ -8,13 +8,7 @@ import {
     getItemWatchLogs,
     deleteWatchLog,
 } from '../api/mediaApi';
-import {
-    contentTypeBadgeClass,
-    contentTypeLabel,
-    formatBadgeClass,
-    formatLabel,
-    statusBadgeClass
-} from '../utils/badges';
+import {formatBadgeClass, formatLabel, statusBadgeClass} from '../utils/badges';
 import {DateActionButton} from './DateActionButton';
 
 interface MediaRowProps {
@@ -79,27 +73,18 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                     isCompleted ? 'bg-emerald-50 hover:bg-emerald-100' : ''
                 }`}
             >
-                <td className="py-3 pl-4">
-                    <div className="flex gap-1.5">
-            <span
-                className={`text-white text-xs font-semibold px-2 py-0.5 rounded-full ${contentTypeBadgeClass(item.contentType)}`}>
-              {contentTypeLabel(item.contentType)}
-            </span>
-                        <span
-                            className={`text-white text-xs font-semibold px-2 py-0.5 rounded-full ${formatBadgeClass(item.format)}`}>
-              {formatLabel(item.format)}
-            </span>
-                    </div>
-                </td>
-
-                <td className="py-3 font-semibold text-gray-800">
+                <td className="py-3 pl-4 font-semibold text-gray-800">
                     <div className="flex items-center gap-2">
                         <ChevronDown size={16}
                                      className={`text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
+                        <span
+                            className={`text-white text-xs font-semibold px-2 py-0.5 rounded-full ${formatBadgeClass(item.format)}`}>
+                            {formatLabel(item.format)}
+                        </span>
                         {item.title}
                     </div>
                     {isSeries && (
-                        <div className="mt-1 h-1.5 w-28 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="mt-1 ml-6 h-1.5 w-28 bg-gray-200 rounded-full overflow-hidden">
                             <div className="h-full bg-emerald-500" style={{width: `${progressPct}%`}}/>
                         </div>
                     )}
@@ -110,9 +95,10 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                 <td className="py-3 text-gray-600">{item.durationMinutes}</td>
 
                 <td className="py-3">
-          <span className={`text-white text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass(item.status)}`}>
-            {item.status}
-          </span>
+                    <span
+                        className={`text-white text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass(item.status)}`}>
+                        {item.status}
+                    </span>
                 </td>
 
                 <td className="py-3 pr-4">
@@ -136,19 +122,20 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
 
             {expanded && (
                 <tr className="bg-gray-50 border-b border-gray-100">
-                    <td colSpan={7} className="p-4">
+                    <td colSpan={6} className="p-4">
                         <div className="border-l-4 border-emerald-500 pl-4 flex flex-col gap-4">
                             {isSeries && (
                                 <div>
                                     <h5 className="font-semibold text-gray-700 mb-2">Watch Progress</h5>
                                     <div className="flex items-center gap-4">
-                    <span className="font-bold text-lg">
-                      {item.watchedEpisodes ?? 0} / {item.totalEpisodes ?? '?'}
-                    </span>
+                                        <span className="font-bold text-lg">
+                                            {item.watchedEpisodes ?? 0} / {item.totalEpisodes ?? '?'}
+                                        </span>
                                         <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden max-w-xs">
                                             <div
                                                 className="h-full bg-emerald-500 flex items-center justify-center text-[10px] text-white"
-                                                style={{width: `${progressPct}%`}}>
+                                                style={{width: `${progressPct}%`}}
+                                            >
                                                 {progressPct > 10 ? `${progressPct}%` : ''}
                                             </div>
                                         </div>
@@ -171,14 +158,16 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                                         {logs.map((l) => (
                                             <li key={l.logId}
                                                 className="flex items-center justify-between bg-white rounded-lg px-3 py-2 text-sm shadow-sm">
-                        <span className="text-gray-600">
-                          {l.watchedAt ? new Date(l.watchedAt).toLocaleDateString('en-US', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric'
-                          }) : '—'}
-                            {l.episodes ? ` — ${l.episodes} episode(s)` : ''} — {l.minutesWatched} min
-                        </span>
+                                                <span className="text-gray-600">
+                                                    {l.watchedAt
+                                                        ? new Date(l.watchedAt).toLocaleDateString('en-US', {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric'
+                                                        })
+                                                        : '—'}
+                                                    {l.episodes ? ` — ${l.episodes} episode(s)` : ''} — {l.minutesWatched} min
+                                                </span>
                                                 <button onClick={() => handleDeleteLog(l.logId)}
                                                         className="text-gray-400 hover:text-red-600">
                                                     <Trash2 size={16}/>

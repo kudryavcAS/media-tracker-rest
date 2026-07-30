@@ -256,6 +256,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/media/{id}/logs/{logId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a watch log entry
+         * @description Removes a specific watch log entry and recalculates watched episode count for series
+         */
+        delete: operations["deleteWatchLog"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -571,8 +591,8 @@ export interface operations {
             query?: {
                 /** @description Filter by content type (MOVIE or SERIES) */
                 contentType?: string;
-                /** @description Filter by format */
-                format?: "LIVE_ACTION" | "ANIME" | "ANIMATION";
+                /** @description Filter by format (repeat param for multiple, e.g. format=ANIME&format=ANIMATION) */
+                format?: ("LIVE_ACTION" | "ANIME" | "ANIMATION")[];
                 /** @description Filter by status */
                 status?: "PLANNED" | "WATCHING" | "COMPLETED" | "DROPPED";
                 /** @description Search in title or directors */
@@ -1260,6 +1280,67 @@ export interface operations {
                 };
                 content: {
                     "*/*": string;
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiErrorResponse"];
+                };
+            };
+        };
+    };
+    deleteWatchLog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the media item */
+                id: string;
+                /** @description UUID of the watch log entry */
+                logId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MediaItemResponse"];
                 };
             };
             /** @description Bad Request */

@@ -1,11 +1,3 @@
-export function contentTypeBadgeClass(contentType?: string): string {
-    return contentType === 'SERIES' ? 'bg-purple-600' : 'bg-blue-600';
-}
-
-export function contentTypeLabel(contentType?: string): string {
-    return contentType === 'SERIES' ? 'Series' : 'Movie';
-}
-
 export function formatBadgeClass(format?: string): string {
     switch (format) {
         case 'ANIME': return 'bg-orange-500';

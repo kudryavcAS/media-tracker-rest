@@ -138,4 +138,14 @@ public class MediaController {
         log.info("REST request to get watch logs for media item ID: {}", id);
         return mediaService.getItemWatchLogs(id);
     }
+
+    @DeleteMapping("/{id}/logs/{logId}")
+    @Operation(summary = "Delete a watch log entry", description = "Removes a specific watch log entry and recalculates watched episode count for series")
+    public MediaItemResponse deleteWatchLog(
+            @Parameter(description = "UUID of the media item") @PathVariable UUID id,
+            @Parameter(description = "UUID of the watch log entry") @PathVariable UUID logId
+    ) {
+        log.info("REST request to delete watch log {} for media item {}", logId, id);
+        return mediaService.deleteWatchLog(id, logId);
+    }
 }

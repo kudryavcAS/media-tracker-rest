@@ -175,7 +175,7 @@ public class MediaService {
         if (watchedAt != null && watchedAt.isAfter(LocalDateTime.now())) {
             throw new IllegalArgumentException("watchedAt cannot be in the future");
         }
-        
+
         if (minutes > 0) {
             WatchLog watchLog = new WatchLog();
             watchLog.setMediaItem(item);
@@ -290,5 +290,37 @@ public class MediaService {
 
         entity.setArchived(archived);
         return mapToResponse(mediaRepository.save(entity));
+    }
+
+    @Transactional
+    public MediaItemResponse deleteWatchLog(UUID mediaItemId, UUID logId) {
+        log.info("Deleting watch log {} for media item {}", logId, mediaItemId);
+
+        MediaItem entity = mediaRepository.findById(mediaItemId)
+                .orElseThrow(() -> new EntityNotFoundException("Media item not found with ID: " + mediaItemId));
+
+        WatchLog watchLog = watchLogRepository.findById(logId)
+                .orElseThrow(() -> new EntityNotFoundException("Watch log not found with ID: " + logId));
+
+        if (!watchLog.getMediaItem().getId().equals(mediaItemId)) {
+            throw new IllegalArgumentException("Watch log does not belong to this media item");
+        }
+
+        watchLogRepository.delete(watchLog);
+
+        if (entity instanceof Series series) {
+            int episodesInLog = watchLog.getEpisodes() != null ? watchLog.getEpisodes() : 0;
+            int currentWatched = series.getWatchedEpisodes() != null ? series.getWatchedEpisodes() : 0;
+            int newWatched = Math.max(0, currentWatched - episodesInLog);
+
+            series.setWatchedEpisodes(newWatched);
+            syncSeriesStatus(series, newWatched, series.getTotalEpisodes() != null ? series.getTotalEpisodes() : 0);
+            entity = mediaRepository.save(series);
+        } else if (entity.getStatus() == WatchStatus.COMPLETED) {
+            entity.setStatus(WatchStatus.PLANNED);
+            entity = mediaRepository.save(entity);
+        }
+
+        return mapToResponse(entity);
     }
 }

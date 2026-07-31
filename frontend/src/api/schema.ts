@@ -591,7 +591,7 @@ export interface operations {
             query?: {
                 /** @description Filter by content type (MOVIE or SERIES) */
                 contentType?: string;
-                /** @description Filter by format (repeat param for multiple, e.g. format=ANIME&format=ANIMATION) */
+                /** @description Filter by format (repeat param for multiple) */
                 format?: ("LIVE_ACTION" | "ANIME" | "ANIMATION")[];
                 /** @description Filter by status */
                 status?: "PLANNED" | "WATCHING" | "COMPLETED" | "DROPPED";
@@ -599,6 +599,10 @@ export interface operations {
                 query?: string;
                 /** @description Include archived items in results */
                 includeArchived?: boolean;
+                /** @description Field to sort by (title, releaseYear, directors, durationMinutes, status, createdAt) */
+                sortBy?: string;
+                /** @description Sort direction (ASC or DESC) */
+                sortDir?: string;
                 /** @description Page number (starts from 1) */
                 page?: number;
                 /** @description Number of items per page (max 200) */

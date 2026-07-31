@@ -73,35 +73,40 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                     isCompleted ? 'bg-emerald-50 hover:bg-emerald-100' : ''
                 }`}
             >
-                <td className="py-3 pl-4 font-semibold text-gray-800">
-                    <div className="flex items-center gap-2">
-                        <ChevronDown size={16}
-                                     className={`text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
-                        <span
-                            className={`text-white text-xs font-semibold px-2 py-0.5 rounded-full ${formatBadgeClass(item.format)}`}>
-                            {formatLabel(item.format)}
-                        </span>
-                        {item.title}
-                    </div>
-                    {isSeries && (
-                        <div className="mt-1 ml-6 h-1.5 w-28 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500" style={{width: `${progressPct}%`}}/>
-                        </div>
-                    )}
+                <td className="py-3 px-4 align-top">
+                    <span
+                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-0.5 rounded-full ${formatBadgeClass(item.format)}`}>
+                        {formatLabel(item.format)}
+                    </span>
                 </td>
 
-                <td className="py-3 text-gray-600">{item.releaseYear}</td>
-                <td className="py-3 text-gray-600">{item.directors}</td>
-                <td className="py-3 text-gray-600">{item.durationMinutes}</td>
+                <td className="py-3 px-4 font-semibold text-gray-800 align-top">
+                    <div className="flex items-start gap-2 min-w-0">
+                        <ChevronDown size={16}
+                                     className={`mt-1 shrink-0 text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
+                        <div className="min-w-0">
+                            <span className="truncate block">{item.title}</span>
+                            {isSeries && (
+                                <div className="mt-1 h-1.5 w-28 bg-gray-200 rounded-full overflow-hidden">
+                                    <div className="h-full bg-emerald-500" style={{width: `${progressPct}%`}}/>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </td>
 
-                <td className="py-3">
+                <td className="py-3 px-4 text-gray-600 align-top">{item.releaseYear}</td>
+                <td className="py-3 px-4 text-gray-600 align-top truncate">{item.directors}</td>
+                <td className="py-3 px-4 text-gray-600 align-top">{item.durationMinutes}</td>
+
+                <td className="py-3 px-4 align-top">
                     <span
-                        className={`text-white text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass(item.status)}`}>
+                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass(item.status)}`}>
                         {item.status}
                     </span>
                 </td>
 
-                <td className="py-3 pr-4">
+                <td className="py-3 px-4 align-top">
                     <div className="flex items-center justify-end gap-1">
                         <DateActionButton
                             title="Mark as completed"
@@ -122,7 +127,7 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
 
             {expanded && (
                 <tr className="bg-gray-50 border-b border-gray-100">
-                    <td colSpan={6} className="p-4">
+                    <td colSpan={7} className="p-4">
                         <div className="border-l-4 border-emerald-500 pl-4 flex flex-col gap-4">
                             {isSeries && (
                                 <div>

@@ -14,12 +14,14 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -29,6 +31,10 @@ public class MediaService {
 
     private final MediaItemRepository mediaRepository;
     private final WatchLogRepository watchLogRepository;
+
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+            "title", "releaseYear", "directors", "durationMinutes", "status", "createdAt"
+    );
 
     @Transactional
     public MediaItemResponse createItem(MediaItemRequest request) {
@@ -52,12 +58,22 @@ public class MediaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MediaItemResponse> getFilteredItems(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean includeArchived, int page, int size) {
-        log.debug("Fetching items with filters - type: {}, formats: {}, status: {}, query: '{}', includeArchived: {}, page: {}",
-                contentType, formats, status, query, includeArchived, page);
+    public Page<MediaItemResponse> getFilteredItems(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean includeArchived, String sortBy, String sortDir, int page, int size) {
+        log.debug("Fetching items with filters - type: {}, formats: {}, status: {}, query: '{}', includeArchived: {}, sortBy: {}, sortDir: {}, page: {}",
+                contentType, formats, status, query, includeArchived, sortBy, sortDir, page);
 
         Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, formats, status, query, includeArchived);
-        Pageable pageable = PageRequest.of(Math.max(0, page - 1), size);
+
+        Sort sort = Sort.unsorted();
+        if (sortBy != null) {
+            if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+                throw new IllegalArgumentException("Cannot sort by field: " + sortBy);
+            }
+            Sort.Direction direction = Sort.Direction.fromString(sortDir != null ? sortDir : "ASC");
+            sort = Sort.by(direction, sortBy);
+        }
+
+        Pageable pageable = PageRequest.of(Math.max(0, page - 1), size, sort);
 
         return mediaRepository.findAll(spec, pageable).map(MediaService::mapToResponse);
     }

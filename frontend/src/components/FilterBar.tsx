@@ -1,4 +1,4 @@
-import {Search} from 'lucide-react';
+import {Search, X} from 'lucide-react';
 
 interface FilterBarProps {
     contentType?: string;
@@ -24,7 +24,7 @@ function ToggleButton({
         <button
             onClick={onClick}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
-                active ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+                active ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100'
             }`}
         >
             {label}
@@ -50,6 +50,15 @@ export function FilterBar({
         onFormatsChange(formats.includes(value) ? formats.filter((f) => f !== value) : [...formats, value]);
     }
 
+    const hasActiveFilters = !!contentType || formats.length > 0 || !!status || query.length > 0;
+
+    function resetFilters() {
+        onContentTypeChange(undefined);
+        onFormatsChange([]);
+        onStatusChange(undefined);
+        onQueryChange('');
+    }
+
     return (
         <div className="bg-white rounded-xl shadow-sm p-3 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1 flex-wrap">
@@ -65,6 +74,16 @@ export function FilterBar({
                               onClick={() => toggleInArray('ANIMATION')}/>
                 <ToggleButton label="Live Action" active={formats.includes('LIVE_ACTION')}
                               onClick={() => toggleInArray('LIVE_ACTION')}/>
+
+                {hasActiveFilters && (
+                    <button
+                        onClick={resetFilters}
+                        title="Reset all filters"
+                        className="ml-2 flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-red-600 hover:bg-red-50"
+                    >
+                        <X size={14}/> Reset
+                    </button>
+                )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -74,14 +93,14 @@ export function FilterBar({
                         value={query}
                         onChange={(e) => onQueryChange(e.target.value)}
                         placeholder="Search..."
-                        className="pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-sm w-48"
+                        className="pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg text-sm w-48 text-gray-900"
                     />
                 </div>
 
                 <select
                     value={status ?? 'ALL'}
                     onChange={(e) => onStatusChange(e.target.value === 'ALL' ? undefined : e.target.value)}
-                    className="border border-gray-200 rounded-lg text-sm px-2 py-1.5"
+                    className="border border-gray-300 rounded-lg text-sm px-2 py-1.5 text-gray-900"
                 >
                     <option value="ALL">Any status</option>
                     <option value="PLANNED">Planned</option>

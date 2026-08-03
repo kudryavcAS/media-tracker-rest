@@ -66,7 +66,7 @@ export function Library() {
     return (
         <div className="max-w-7xl mx-auto p-6">
             <div className="flex items-center justify-between mb-4">
-                <h1 className="text-3xl font-extrabold text-gray-800">Media Tracker</h1>
+                <h1 className="text-3xl font-extrabold text-gray-900">Media Tracker</h1>
                 <div className="flex items-center gap-2">
                     <button className="p-2 rounded-lg border border-red-300 text-red-500 hover:bg-red-50">
                         <Power size={18}/>
@@ -110,7 +110,7 @@ export function Library() {
                         <col className="w-[12%]"/>
                         <col className="w-[10%]"/>
                     </colgroup>
-                    <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
+                    <thead className="bg-gray-50 text-gray-700 uppercase text-xs font-semibold">
                     <tr>
                         <th className="py-3 px-4">Format</th>
                         <th className="py-3 px-4">

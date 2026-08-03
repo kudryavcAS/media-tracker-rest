@@ -73,17 +73,17 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                     isCompleted ? 'bg-emerald-50 hover:bg-emerald-100' : ''
                 }`}
             >
-                <td className="py-3 px-4 align-top">
+                <td className="py-3 px-4 align-middle">
                     <span
                         className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-0.5 rounded-full ${formatBadgeClass(item.format)}`}>
                         {formatLabel(item.format)}
                     </span>
                 </td>
 
-                <td className="py-3 px-4 font-semibold text-gray-800 align-top">
-                    <div className="flex items-start gap-2 min-w-0">
+                <td className="py-3 px-4 font-semibold text-gray-900 align-middle">
+                    <div className="flex items-center gap-2 min-w-0">
                         <ChevronDown size={16}
-                                     className={`mt-1 shrink-0 text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
+                                     className={`shrink-0 text-gray-500 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
                         <div className="min-w-0">
                             <span className="truncate block">{item.title}</span>
                             {isSeries && (
@@ -95,18 +95,18 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                     </div>
                 </td>
 
-                <td className="py-3 px-4 text-gray-600 align-top">{item.releaseYear}</td>
-                <td className="py-3 px-4 text-gray-600 align-top truncate">{item.directors}</td>
-                <td className="py-3 px-4 text-gray-600 align-top">{item.durationMinutes}</td>
+                <td className="py-3 px-4 text-gray-800 align-middle">{item.releaseYear}</td>
+                <td className="py-3 px-4 text-gray-800 align-middle truncate">{item.directors}</td>
+                <td className="py-3 px-4 text-gray-800 align-middle">{item.durationMinutes}</td>
 
-                <td className="py-3 px-4 align-top">
+                <td className="py-3 px-4 align-middle">
                     <span
                         className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass(item.status)}`}>
                         {item.status}
                     </span>
                 </td>
 
-                <td className="py-3 px-4 align-top">
+                <td className="py-3 px-4 align-middle">
                     <div className="flex items-center justify-end gap-1">
                         <DateActionButton
                             title="Mark as completed"

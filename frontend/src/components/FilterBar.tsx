@@ -5,10 +5,12 @@ interface FilterBarProps {
     formats: string[];
     status?: string;
     query: string;
+    sortBy?: string;
     onContentTypeChange: (v?: string) => void;
     onFormatsChange: (v: string[]) => void;
     onStatusChange: (v?: string) => void;
     onQueryChange: (v: string) => void;
+    onSortReset: () => void;
 }
 
 function ToggleButton({
@@ -37,10 +39,12 @@ export function FilterBar({
                               formats,
                               status,
                               query,
+                              sortBy,
                               onContentTypeChange,
                               onFormatsChange,
                               onStatusChange,
                               onQueryChange,
+                              onSortReset,
                           }: FilterBarProps) {
     function toggleSingle(current: string | undefined, value: string, onChange: (v?: string) => void) {
         onChange(current === value ? undefined : value);
@@ -50,13 +54,14 @@ export function FilterBar({
         onFormatsChange(formats.includes(value) ? formats.filter((f) => f !== value) : [...formats, value]);
     }
 
-    const hasActiveFilters = !!contentType || formats.length > 0 || !!status || query.length > 0;
+    const hasActiveFilters = !!contentType || formats.length > 0 || !!status || query.length > 0 || !!sortBy;
 
     function resetFilters() {
         onContentTypeChange(undefined);
         onFormatsChange([]);
         onStatusChange(undefined);
         onQueryChange('');
+        onSortReset();
     }
 
     return (

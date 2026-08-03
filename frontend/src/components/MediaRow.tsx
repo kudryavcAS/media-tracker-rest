@@ -10,13 +10,15 @@ import {
 } from '../api/mediaApi';
 import {formatBadgeClass, formatLabel, statusBadgeClass} from '../utils/badges';
 import {DateActionButton} from './DateActionButton';
+import {highlightMatch} from '../utils/highlight';
 
 interface MediaRowProps {
     item: MediaItemResponse;
+    query: string;
     onItemUpdated: (updated: MediaItemResponse) => void;
 }
 
-export function MediaRow({item, onItemUpdated}: MediaRowProps) {
+export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
     const [expanded, setExpanded] = useState(false);
     const [logs, setLogs] = useState<WatchDetailResponse[] | null>(null);
     const [logsLoading, setLogsLoading] = useState(false);
@@ -69,8 +71,8 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
         <>
             <tr
                 onClick={toggleExpanded}
-                className={`cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition ${
-                    isCompleted ? 'bg-emerald-50 hover:bg-emerald-100' : ''
+                className={`cursor-pointer border-b border-gray-100 transition ${
+                    isCompleted ? 'bg-emerald-50 hover:bg-emerald-100' : 'hover:bg-gray-50'
                 }`}
             >
                 <td className="py-3 px-4 align-middle">
@@ -85,7 +87,7 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                         <ChevronDown size={16}
                                      className={`shrink-0 text-gray-500 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
                         <div className="min-w-0">
-                            <span className="truncate block">{item.title}</span>
+                            <span className="truncate block">{highlightMatch(item.title, query)}</span>
                             {isSeries && (
                                 <div className="mt-1 h-1.5 w-28 bg-gray-200 rounded-full overflow-hidden">
                                     <div className="h-full bg-emerald-500" style={{width: `${progressPct}%`}}/>
@@ -96,7 +98,7 @@ export function MediaRow({item, onItemUpdated}: MediaRowProps) {
                 </td>
 
                 <td className="py-3 px-4 text-gray-800 align-middle">{item.releaseYear}</td>
-                <td className="py-3 px-4 text-gray-800 align-middle truncate">{item.directors}</td>
+                <td className="py-3 px-4 text-gray-800 align-middle truncate">{highlightMatch(item.directors, query)}</td>
                 <td className="py-3 px-4 text-gray-800 align-middle">{item.durationMinutes}</td>
 
                 <td className="py-3 px-4 align-middle">

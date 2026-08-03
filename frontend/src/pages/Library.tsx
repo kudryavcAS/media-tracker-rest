@@ -92,10 +92,15 @@ export function Library() {
                     formats={formats}
                     status={status}
                     query={query}
+                    sortBy={sortBy}
                     onContentTypeChange={setContentType}
                     onFormatsChange={setFormats}
                     onStatusChange={setStatus}
                     onQueryChange={setQuery}
+                    onSortReset={() => {
+                        setSortBy(undefined);
+                        setSortDir(undefined);
+                    }}
                 />
             </div>
 
@@ -138,7 +143,7 @@ export function Library() {
                     </thead>
                     <tbody>
                     {items.map((item) => (
-                        <MediaRow key={item.id} item={item} onItemUpdated={handleItemUpdated}/>
+                        <MediaRow key={item.id} item={item} query={query} onItemUpdated={handleItemUpdated}/>
                     ))}
                     </tbody>
                 </table>

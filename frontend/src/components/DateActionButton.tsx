@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Check, CalendarClock} from 'lucide-react';
+import {Plus, CalendarClock} from 'lucide-react';
 
 interface DateActionButtonProps {
     onQuickAction: () => void;
@@ -27,7 +27,7 @@ export function DateActionButton({onQuickAction, onDatedAction, title, disabled}
                 onClick={onQuickAction}
                 className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-emerald-600 disabled:opacity-30 disabled:pointer-events-none"
             >
-                <Check size={18}/>
+                <Plus size={18}/>
             </button>
 
             <button

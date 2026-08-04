@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useMemo} from 'react';
 import {Pencil, ChevronDown, Trash2} from 'lucide-react';
 import {
     type MediaItemResponse,
@@ -28,6 +28,37 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
     const isCompleted = item.status === 'COMPLETED';
     const progressPct =
         isSeries && item.totalEpisodes ? Math.min(100, Math.round(((item.watchedEpisodes ?? 0) / item.totalEpisodes) * 100)) : 0;
+
+    const groupedLogs = useMemo(() => {
+        if (!logs) return null;
+
+        const groups = new Map<string, {
+            watchedAt?: string;
+            episodes: number;
+            minutesWatched: number;
+            logIds: string[];
+        }>();
+
+        logs.forEach(l => {
+            const dateKey = l.watchedAt ? l.watchedAt.split('T')[0] : 'unknown';
+
+            if (!groups.has(dateKey)) {
+                groups.set(dateKey, {
+                    watchedAt: l.watchedAt,
+                    episodes: l.episodes || 0,
+                    minutesWatched: l.minutesWatched || 0,
+                    logIds: [l.logId!]
+                });
+            } else {
+                const g = groups.get(dateKey)!;
+                g.episodes += (l.episodes || 0);
+                g.minutesWatched += (l.minutesWatched || 0);
+                g.logIds.push(l.logId!);
+            }
+        });
+
+        return Array.from(groups.values());
+    }, [logs]);
 
     async function loadLogs() {
         if (!item.id) return;
@@ -60,11 +91,21 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
         loadLogs();
     }
 
-    async function handleDeleteLog(logId?: string) {
-        if (!item.id || !logId) return;
-        if (!confirm('Delete this watch log entry?')) return;
-        const updated = await deleteWatchLog(item.id, logId);
-        onItemUpdated(updated);
+    async function handleDeleteLogGroup(logIds: string[]) {
+        if (!item.id || logIds.length === 0) return;
+
+        const msg = logIds.length > 1
+            ? `Delete all ${logIds.length} watch entries for this day?`
+            : `Delete this watch log entry?`;
+
+        if (!confirm(msg)) return;
+
+        let updatedItem = item;
+        for (const logId of logIds) {
+            updatedItem = await deleteWatchLog(item.id, logId);
+        }
+
+        onItemUpdated(updatedItem);
         loadLogs();
     }
 
@@ -162,23 +203,24 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
                                 {logsLoading && <p className="text-sm text-gray-400">Loading...</p>}
                                 {!logsLoading && logs && logs.length === 0 &&
                                     <p className="text-sm text-gray-400">No watch logs yet.</p>}
-                                {!logsLoading && logs && logs.length > 0 && (
+                                {!logsLoading && groupedLogs && groupedLogs.length > 0 && (
                                     <ul className="flex flex-col gap-1.5 max-h-52 overflow-y-auto">
-                                        {logs.map((l) => (
-                                            <li key={l.logId}
+                                        {groupedLogs.map((g, idx) => (
+                                            <li key={idx}
                                                 className="flex items-center justify-between bg-white rounded-lg px-3 py-2 text-sm shadow-sm">
-                                                <span className="text-gray-600">
-                                                    {l.watchedAt
-                                                        ? new Date(l.watchedAt).toLocaleDateString('en-US', {
-                                                            day: 'numeric',
-                                                            month: 'short',
-                                                            year: 'numeric'
-                                                        })
-                                                        : '—'}
-                                                    {l.episodes ? ` — ${l.episodes} episode(s)` : ''} — {l.minutesWatched} min
-                                                </span>
-                                                <button onClick={() => handleDeleteLog(l.logId)}
-                                                        className="text-gray-400 hover:text-red-600">
+                                             <span className="text-gray-600">
+                                                 {g.watchedAt
+                                                     ? new Date(g.watchedAt).toLocaleDateString('en-US', {
+                                                         day: 'numeric',
+                                                         month: 'short',
+                                                         year: 'numeric'
+                                                     })
+                                                     : '—'}
+                                                 {g.episodes > 0 ? ` — ${g.episodes} episode(s)` : ''} — {g.minutesWatched} min
+                                             </span>
+                                                <button onClick={() => handleDeleteLogGroup(g.logIds)}
+                                                        className="text-gray-400 hover:text-red-600"
+                                                        title="Delete entry">
                                                     <Trash2 size={16}/>
                                                 </button>
                                             </li>

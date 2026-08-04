@@ -11,6 +11,7 @@ import {
 import {formatBadgeClass, formatLabel, statusBadgeClass} from '../utils/badges';
 import {DateActionButton} from './DateActionButton';
 import {highlightMatch} from '../utils/highlight';
+import {Link} from 'react-router-dom';
 
 interface MediaRowProps {
     item: MediaItemResponse;
@@ -116,13 +117,14 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
                             onQuickAction={() => handleComplete()}
                             onDatedAction={(d) => handleComplete(d)}
                         />
-                        <button
+                        <Link
+                            to={`/media/${item.id}/edit`}
                             onClick={(e) => e.stopPropagation()}
                             title="Edit"
-                            className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-blue-600"
+                            className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-blue-600 inline-flex"
                         >
                             <Pencil size={18}/>
-                        </button>
+                        </Link>
                     </div>
                 </td>
             </tr>

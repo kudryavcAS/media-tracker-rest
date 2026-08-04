@@ -1,9 +1,10 @@
-import { apiClient } from './client';
-import type { components } from './schema';
+import {apiClient} from './client';
+import type {components} from './schema';
 
 export type MediaItemResponse = components['schemas']['MediaItemResponse'];
 export type WatchDetailResponse = components['schemas']['WatchDetailResponse'];
 export type PageResponseMediaItemResponse = components['schemas']['PageResponseMediaItemResponse'];
+export type MediaItemRequest = components['schemas']['MediaItemRequest'];
 
 export interface GetMediaItemsParams {
     contentType?: string;
@@ -39,14 +40,14 @@ export async function getMediaItems(params?: GetMediaItemsParams): Promise<PageR
 
 export async function markAsCompleted(id: string, watchedAt?: string): Promise<MediaItemResponse> {
     const response = await apiClient.post(`/api/v1/media/${id}/complete`, null, {
-        params: watchedAt ? { watchedAt } : undefined,
+        params: watchedAt ? {watchedAt} : undefined,
     });
     return response.data;
 }
 
 export async function updateProgress(id: string, delta: number, watchedAt?: string): Promise<MediaItemResponse> {
     const response = await apiClient.patch(`/api/v1/media/${id}/progress`, null, {
-        params: { delta, ...(watchedAt ? { watchedAt } : {}) },
+        params: {delta, ...(watchedAt ? {watchedAt} : {})},
     });
     return response.data;
 }
@@ -58,5 +59,20 @@ export async function getItemWatchLogs(id: string): Promise<WatchDetailResponse[
 
 export async function deleteWatchLog(id: string, logId: string): Promise<MediaItemResponse> {
     const response = await apiClient.delete(`/api/v1/media/${id}/logs/${logId}`);
+    return response.data;
+}
+
+export async function getMediaItemById(id: string): Promise<MediaItemResponse> {
+    const response = await apiClient.get(`/api/v1/media/${id}`);
+    return response.data;
+}
+
+export async function createItem(request: MediaItemRequest): Promise<MediaItemResponse> {
+    const response = await apiClient.post('/api/v1/media', request);
+    return response.data;
+}
+
+export async function updateItem(id: string, request: MediaItemRequest): Promise<MediaItemResponse> {
+    const response = await apiClient.put(`/api/v1/media/${id}`, request);
     return response.data;
 }

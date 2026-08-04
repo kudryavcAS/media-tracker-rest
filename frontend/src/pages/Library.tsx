@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
-import {Power, Plus, Settings} from 'lucide-react';
+import {Link} from 'react-router-dom';
+import {Power, Plus, Settings as SettingsIcon} from 'lucide-react';
 import {getMediaItems, type MediaItemResponse} from '../api/mediaApi';
 import {FilterBar} from '../components/FilterBar';
 import {MediaRow} from '../components/MediaRow';
@@ -71,18 +72,18 @@ export function Library() {
                     <button className="p-2 rounded-lg border border-red-300 text-red-500 hover:bg-red-50">
                         <Power size={18}/>
                     </button>
-                    <button
-                        className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">
+                    <Link to="/media/new/movie"
+                          className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">
                         <Plus size={16}/> Movie
-                    </button>
-                    <button
-                        className="flex items-center gap-1 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700">
+                    </Link>
+                    <Link to="/media/new/series"
+                          className="flex items-center gap-1 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700">
                         <Plus size={16}/> Series
-                    </button>
-                    <button
-                        className="flex items-center gap-1 bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700">
-                        <Settings size={16}/> Settings
-                    </button>
+                    </Link>
+                    <Link to="/settings"
+                          className="flex items-center gap-1 bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700">
+                        <SettingsIcon size={16}/> Settings
+                    </Link>
                 </div>
             </div>
 
@@ -136,7 +137,7 @@ export function Library() {
                         </th>
                         <th className="py-3 px-4">
                             <SortableHeader label="Status" field="status" activeField={sortBy} activeDir={sortDir}
-                                            defaultDir="ASC" onSort={handleSort}/>
+                                            defaultDir="DESC" onSort={handleSort}/>
                         </th>
                         <th className="py-3 px-4 text-right">Actions</th>
                     </tr>

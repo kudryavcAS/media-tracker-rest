@@ -66,23 +66,25 @@ export function Library() {
 
     return (
         <div className="max-w-7xl mx-auto p-6">
-            <div className="flex items-center justify-between mb-4">
-                <h1 className="text-3xl font-extrabold text-gray-900">Media Tracker</h1>
-                <div className="flex items-center gap-2">
-                    <button className="p-2 rounded-lg border border-red-300 text-red-500 hover:bg-red-50">
+            <div className="flex items-center justify-between mb-6">
+                <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Media Tracker</h1>
+
+                <div className="flex items-center gap-2.5">
+                    <button
+                        className="w-10 h-10 flex items-center justify-center rounded-lg border border-red-300 text-red-500 hover:bg-red-50 transition-colors">
                         <Power size={18}/>
                     </button>
                     <Link to="/media/new/movie"
-                          className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">
-                        <Plus size={16}/> Movie
+                          className="h-10 flex items-center gap-1.5 bg-blue-600 text-white px-4 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+                        <Plus size={18}/> Movie
                     </Link>
                     <Link to="/media/new/series"
-                          className="flex items-center gap-1 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700">
-                        <Plus size={16}/> Series
+                          className="h-10 flex items-center gap-1.5 bg-emerald-600 text-white px-4 rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-colors">
+                        <Plus size={18}/> Series
                     </Link>
                     <Link to="/settings"
-                          className="flex items-center gap-1 bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700">
-                        <SettingsIcon size={16}/> Settings
+                          className="h-10 flex items-center gap-1.5 bg-gray-600 text-white px-4 rounded-lg text-sm font-semibold hover:bg-gray-700 transition-colors">
+                        <SettingsIcon size={18}/> Settings
                     </Link>
                 </div>
             </div>

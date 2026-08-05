@@ -1,14 +1,15 @@
 import {useState} from 'react';
-import {Plus, CalendarClock} from 'lucide-react';
+import {Plus, Check, CalendarClock} from 'lucide-react';
 
 interface DateActionButtonProps {
     onQuickAction: () => void;
     onDatedAction: (isoDateTime: string) => void;
     title: string;
     disabled?: boolean;
+    iconType?: 'plus' | 'check';
 }
 
-export function DateActionButton({onQuickAction, onDatedAction, title, disabled}: DateActionButtonProps) {
+export function DateActionButton({onQuickAction, onDatedAction, title, disabled, iconType = 'plus'}: DateActionButtonProps) {
     const [pickerOpen, setPickerOpen] = useState(false);
     const [date, setDate] = useState('');
 
@@ -19,22 +20,27 @@ export function DateActionButton({onQuickAction, onDatedAction, title, disabled}
         setDate('');
     }
 
+    const Icon = iconType === 'check' ? Check : Plus;
+    const mainBtnClass = iconType === 'check'
+        ? 'text-emerald-600 hover:bg-emerald-100'
+        : 'text-gray-500 hover:bg-gray-100 hover:text-emerald-600';
+
     return (
         <div className="relative inline-flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             <button
                 title={title}
                 disabled={disabled}
                 onClick={onQuickAction}
-                className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-emerald-600 disabled:opacity-30 disabled:pointer-events-none"
+                className={`p-1.5 rounded-full transition-colors disabled:opacity-30 disabled:pointer-events-none ${mainBtnClass}`}
             >
-                <Plus size={18}/>
+                <Icon size={18}/>
             </button>
 
             <button
                 title="Pick a retroactive date"
                 disabled={disabled}
                 onClick={() => setPickerOpen((v) => !v)}
-                className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-blue-600 disabled:opacity-30 disabled:pointer-events-none"
+                className="p-1.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-blue-600 transition-colors disabled:opacity-30 disabled:pointer-events-none"
             >
                 <CalendarClock size={18}/>
             </button>

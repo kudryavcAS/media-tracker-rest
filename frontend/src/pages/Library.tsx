@@ -116,7 +116,7 @@ export function Library() {
                         <col className="w-[12%]"/>
                         <col className="w-[10%]"/>
                     </colgroup>
-                    <thead className="bg-gray-50 text-gray-700 uppercase text-xs font-semibold">
+                    <thead className="bg-gray-50 text-gray-700 text-xs font-semibold">
                     <tr>
                         <th className="py-3 px-4">Format</th>
                         <th className="py-3 px-4">

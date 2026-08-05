@@ -114,12 +114,12 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
             <tr
                 onClick={toggleExpanded}
                 className={`cursor-pointer border-b border-gray-100 transition ${
-                    isCompleted ? 'bg-emerald-50 hover:bg-emerald-100' : 'hover:bg-gray-50'
+                    isCompleted ? 'bg-emerald-100 hover:bg-emerald-200' : 'hover:bg-gray-50'
                 }`}
             >
                 <td className="py-3 px-4 align-middle">
                     <span
-                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-0.5 rounded-full ${formatBadgeClass(item.format)}`}>
+                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-0.5 rounded-md ${formatBadgeClass(item.format)}`}>
                         {formatLabel(item.format)}
                     </span>
                 </td>
@@ -145,7 +145,7 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
 
                 <td className="py-3 px-4 align-middle">
                     <span
-                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass(item.status)}`}>
+                        className={`whitespace-nowrap text-white text-sm font-semibold px-2.5 py-1 rounded-md ${statusBadgeClass(item.status)}`}>
                         {item.status ? item.status.charAt(0) + item.status.slice(1).toLowerCase() : ''}
                     </span>
                 </td>

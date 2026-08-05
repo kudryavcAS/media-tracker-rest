@@ -25,7 +25,7 @@ function ToggleButton({
     return (
         <button
             onClick={onClick}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+            className={`px-3 py-1.5 rounded-md text-base font-medium transition ${
                 active ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100'
             }`}
         >
@@ -84,28 +84,28 @@ export function FilterBar({
                     <button
                         onClick={resetFilters}
                         title="Reset all filters"
-                        className="ml-2 flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium text-red-600 hover:bg-red-50"
+                        className="ml-2 flex items-center gap-1 px-3 py-1.5 rounded-md text-base font-medium text-red-600 hover:bg-red-50"
                     >
-                        <X size={14}/> Reset
+                        <X size={16}/> Reset
                     </button>
                 )}
             </div>
 
             <div className="flex items-center gap-2">
                 <div className="relative">
-                    <Search size={16} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"/>
+                    <Search size={18} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"/>
                     <input
                         value={query}
                         onChange={(e) => onQueryChange(e.target.value)}
                         placeholder="Search..."
-                        className="pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg text-sm w-48 text-gray-900"
+                        className="pl-9 pr-3 py-1.5 border border-gray-300 rounded-lg text-base w-56 text-gray-900"
                     />
                 </div>
 
                 <select
                     value={status ?? 'ALL'}
                     onChange={(e) => onStatusChange(e.target.value === 'ALL' ? undefined : e.target.value)}
-                    className="border border-gray-300 rounded-lg text-sm px-2 py-1.5 text-gray-900"
+                    className="border border-gray-300 rounded-lg text-base px-2 py-1.5 text-gray-900"
                 >
                     <option value="ALL">Any status</option>
                     <option value="PLANNED">Planned</option>

@@ -137,9 +137,10 @@ export function Stats() {
     return (
         <div className="max-w-6xl mx-auto p-6">
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-extrabold text-gray-900">Statistics</h1>
-                <Link to="/" className="flex items-center gap-1 text-gray-700 hover:text-gray-900 text-sm font-medium">
-                    <ArrowLeft size={16}/> Back to Library
+                <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Statistics</h1>
+                <Link to="/"
+                      className="flex items-center gap-1.5 text-gray-600 hover:text-gray-900 text-base font-semibold transition-colors">
+                    <ArrowLeft size={18}/> Back to Library
                 </Link>
             </div>
 
@@ -194,26 +195,26 @@ export function Stats() {
                         </div>
 
                         <div className="bg-white rounded-xl shadow-sm p-5">
-                            <h3 className="font-semibold text-gray-900 mb-3">Statuses</h3>
-                            <div className="flex flex-col gap-2 text-sm">
-                                <div className="flex justify-between">
+                            <h3 className="font-semibold text-gray-900 mb-3 text-lg">Statuses</h3>
+                            <div className="flex flex-col gap-3 text-base">
+                                <div className="flex justify-between items-center">
                                     <span
-                                        className="bg-gray-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Completed</span>
+                                        className="bg-gray-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Completed</span>
                                     <span className="font-bold text-gray-900">{stats.completedCount}</span>
                                 </div>
-                                <div className="flex justify-between">
+                                <div className="flex justify-between items-center">
                                     <span
-                                        className="bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Watching</span>
+                                        className="bg-amber-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Watching</span>
                                     <span className="font-bold text-gray-900">{stats.watchingCount}</span>
                                 </div>
-                                <div className="flex justify-between">
+                                <div className="flex justify-between items-center">
                                     <span
-                                        className="bg-sky-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Planned</span>
+                                        className="bg-sky-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Planned</span>
                                     <span className="font-bold text-gray-900">{stats.plannedCount}</span>
                                 </div>
-                                <div className="flex justify-between">
+                                <div className="flex justify-between items-center">
                                     <span
-                                        className="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Dropped</span>
+                                        className="bg-red-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Dropped</span>
                                     <span className="font-bold text-gray-900">{stats.droppedCount}</span>
                                 </div>
                             </div>
@@ -232,7 +233,7 @@ export function Stats() {
                         </span>
                     </h3>
 
-                    <div className="flex items-center gap-3 text-sm">
+                    <div className="flex items-center gap-3 text-base">
                         <label className="flex items-center gap-1.5 text-gray-700">
                             <input type="checkbox" checked={showTrend}
                                    onChange={(e) => setShowTrend(e.target.checked)}/> Trend Line
@@ -245,18 +246,21 @@ export function Stats() {
                 </div>
 
                 <div
-                    className="flex flex-wrap items-center gap-2 mb-4 bg-gray-50 border border-gray-200 rounded-lg p-2">
-                    <span className="text-xs font-semibold text-gray-600">Period:</span>
+                    className="flex flex-wrap items-center gap-3 mb-6 bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <span className="text-sm font-semibold text-gray-700 ml-1">Period:</span>
                     <input type="date" value={start} onChange={(e) => setStart(e.target.value)}
-                           className="border border-gray-300 rounded px-2 py-1 text-sm"/>
+                           className="h-10 border border-gray-300 rounded-lg px-3 text-base text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow"/>
                     <span className="text-gray-400">—</span>
                     <input type="date" value={end} onChange={(e) => setEnd(e.target.value)}
-                           className="border border-gray-300 rounded px-2 py-1 text-sm"/>
-                    <span className="text-xs font-semibold text-gray-600 ml-3">Scale:</span>
+                           className="h-10 border border-gray-300 rounded-lg px-3 text-base text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow"/>
+
+                    <div className="w-px h-6 bg-gray-200 mx-2"/>
+
+                    <span className="text-sm font-semibold text-gray-700">Scale:</span>
                     <select
                         value={grouping}
                         onChange={(e) => setGrouping(e.target.value as typeof grouping)}
-                        className="border border-gray-300 rounded px-2 py-1 text-sm font-semibold text-blue-600"
+                        className="h-10 border border-gray-300 rounded-lg px-3 text-base font-semibold text-blue-600 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow"
                     >
                         <option value="DAY">Daily</option>
                         <option value="WEEK">Weekly</option>

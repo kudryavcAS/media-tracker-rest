@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import { Bar } from 'react-chartjs-2';
+import {useEffect, useMemo, useState} from 'react';
+import {Link} from 'react-router-dom';
+import {ArrowLeft} from 'lucide-react';
+import {Chart} from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -20,11 +20,11 @@ import {
     type ChartDataResponse,
     type WatchDetailResponse,
 } from '../api/statsApi';
-import { formatDuration } from '../utils/duration';
+import {formatDuration} from '../utils/duration';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend);
 
-const FORMAT_COLORS = { liveAction: '#20c997', anime: '#fd7e14', animation: '#0dcaf0' };
+const FORMAT_COLORS = {liveAction: '#20c997', anime: '#fd7e14', animation: '#0dcaf0'};
 
 function todayIso(): string {
     return new Date().toISOString().split('T')[0];
@@ -65,8 +65,11 @@ export function Stats() {
             chartData.map((d) => {
                 if (!d.watchDate) return '';
                 if (grouping === 'YEAR') return d.watchDate;
-                if (grouping === 'MONTH') return new Date(d.watchDate + '-01').toLocaleString('en-US', { month: 'short', year: 'numeric' });
-                const formatted = new Date(d.watchDate).toLocaleString('en-US', { month: 'short', day: 'numeric' });
+                if (grouping === 'MONTH') return new Date(d.watchDate + '-01').toLocaleString('en-US', {
+                    month: 'short',
+                    year: 'numeric'
+                });
+                const formatted = new Date(d.watchDate).toLocaleString('en-US', {month: 'short', day: 'numeric'});
                 return grouping === 'WEEK' ? 'Week ' + formatted : formatted;
             }),
         [chartData, grouping]
@@ -126,7 +129,7 @@ export function Stats() {
     async function handleBarClick(index: number) {
         const point = chartData[index];
         if (!point?.watchDate) return;
-        setSelectedKey({ dateKey: point.watchDate, label: labels[index] });
+        setSelectedKey({dateKey: point.watchDate, label: labels[index]});
         const data = await getWatchDetails(point.watchDate, grouping);
         setDetails(data);
     }
@@ -136,7 +139,7 @@ export function Stats() {
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-3xl font-extrabold text-gray-900">Statistics</h1>
                 <Link to="/" className="flex items-center gap-1 text-gray-700 hover:text-gray-900 text-sm font-medium">
-                    <ArrowLeft size={16} /> Back to Library
+                    <ArrowLeft size={16}/> Back to Library
                 </Link>
             </div>
 
@@ -159,15 +162,18 @@ export function Stats() {
                             <div className="flex flex-col gap-2 text-sm">
                                 <div className="flex justify-between border-b border-gray-100 pb-1.5">
                                     <span className="font-medium text-gray-800">Live Action</span>
-                                    <span className="text-gray-600">{formatDuration(stats.liveActionWatchedMinutes ?? 0)}</span>
+                                    <span
+                                        className="text-gray-600">{formatDuration(stats.liveActionWatchedMinutes ?? 0)}</span>
                                 </div>
                                 <div className="flex justify-between border-b border-gray-100 pb-1.5">
                                     <span className="font-medium text-gray-800">Anime</span>
-                                    <span className="text-gray-600">{formatDuration(stats.animeWatchedMinutes ?? 0)}</span>
+                                    <span
+                                        className="text-gray-600">{formatDuration(stats.animeWatchedMinutes ?? 0)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-medium text-gray-800">Animation</span>
-                                    <span className="text-gray-600">{formatDuration(stats.animationWatchedMinutes ?? 0)}</span>
+                                    <span
+                                        className="text-gray-600">{formatDuration(stats.animationWatchedMinutes ?? 0)}</span>
                                 </div>
                             </div>
                         </div>
@@ -191,19 +197,23 @@ export function Stats() {
                             <h3 className="font-semibold text-gray-900 mb-3">Statuses</h3>
                             <div className="flex flex-col gap-2 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="bg-gray-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Completed</span>
+                                    <span
+                                        className="bg-gray-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Completed</span>
                                     <span className="font-bold text-gray-900">{stats.completedCount}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Watching</span>
+                                    <span
+                                        className="bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Watching</span>
                                     <span className="font-bold text-gray-900">{stats.watchingCount}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="bg-sky-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Planned</span>
+                                    <span
+                                        className="bg-sky-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Planned</span>
                                     <span className="font-bold text-gray-900">{stats.plannedCount}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Dropped</span>
+                                    <span
+                                        className="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md">Dropped</span>
                                     <span className="font-bold text-gray-900">{stats.droppedCount}</span>
                                 </div>
                             </div>
@@ -216,26 +226,32 @@ export function Stats() {
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                     <h3 className="font-semibold text-gray-900">
                         Watch Activity{' '}
-                        <span className="ml-2 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-full">
+                        <span
+                            className="ml-2 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-full">
                             Total: {formatDuration(totalPeriodMinutes)}
                         </span>
                     </h3>
 
                     <div className="flex items-center gap-3 text-sm">
                         <label className="flex items-center gap-1.5 text-gray-700">
-                            <input type="checkbox" checked={showTrend} onChange={(e) => setShowTrend(e.target.checked)} /> Trend Line
+                            <input type="checkbox" checked={showTrend}
+                                   onChange={(e) => setShowTrend(e.target.checked)}/> Trend Line
                         </label>
                         <label className="flex items-center gap-1.5 text-gray-700">
-                            <input type="checkbox" checked={splitFormat} onChange={(e) => setSplitFormat(e.target.checked)} /> Split by Format
+                            <input type="checkbox" checked={splitFormat}
+                                   onChange={(e) => setSplitFormat(e.target.checked)}/> Split by Format
                         </label>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 mb-4 bg-gray-50 border border-gray-200 rounded-lg p-2">
+                <div
+                    className="flex flex-wrap items-center gap-2 mb-4 bg-gray-50 border border-gray-200 rounded-lg p-2">
                     <span className="text-xs font-semibold text-gray-600">Period:</span>
-                    <input type="date" value={start} onChange={(e) => setStart(e.target.value)} className="border border-gray-300 rounded px-2 py-1 text-sm" />
+                    <input type="date" value={start} onChange={(e) => setStart(e.target.value)}
+                           className="border border-gray-300 rounded px-2 py-1 text-sm"/>
                     <span className="text-gray-400">—</span>
-                    <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} className="border border-gray-300 rounded px-2 py-1 text-sm" />
+                    <input type="date" value={end} onChange={(e) => setEnd(e.target.value)}
+                           className="border border-gray-300 rounded px-2 py-1 text-sm"/>
                     <span className="text-xs font-semibold text-gray-600 ml-3">Scale:</span>
                     <select
                         value={grouping}
@@ -249,15 +265,16 @@ export function Stats() {
                     </select>
                 </div>
 
-                <Bar
+                <Chart
+                    type="bar"
                     data={chartJsData}
                     options={{
                         responsive: true,
-                        interaction: { mode: 'index', intersect: false },
+                        interaction: {mode: 'index', intersect: false},
                         onClick: (_e, elements) => {
                             if (elements.length > 0) handleBarClick(elements[0].index);
                         },
-                        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } },
+                        scales: {x: {stacked: true}, y: {stacked: true, beginAtZero: true}},
                     }}
                 />
 
@@ -265,11 +282,13 @@ export function Stats() {
                     <div className="mt-4 pt-4 border-t border-gray-100">
                         <h4 className="font-semibold text-gray-700 mb-2">Activity for {selectedKey.label}</h4>
                         {details === null && <p className="text-sm text-gray-400">Loading...</p>}
-                        {details && details.length === 0 && <p className="text-sm text-gray-400">No details available.</p>}
+                        {details && details.length === 0 &&
+                            <p className="text-sm text-gray-400">No details available.</p>}
                         {details && details.length > 0 && (
                             <ul className="flex flex-col gap-1.5 max-h-52 overflow-y-auto">
                                 {details.map((d) => (
-                                    <li key={d.logId} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                                    <li key={d.logId}
+                                        className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
                                         <span className="font-medium text-gray-800">{d.title}</span>
                                         <span className="text-gray-600">
                                             {d.episodes ? `${d.episodes} episode(s) — ` : ''}

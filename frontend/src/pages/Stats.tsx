@@ -21,10 +21,10 @@ import {
     type WatchDetailResponse,
 } from '../api/statsApi';
 import {formatDuration} from '../utils/duration';
+import {CHART_COLORS} from '../utils/chartColors';
+import {ToggleSwitch} from '../components/ToggleSwitch';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend);
-
-const FORMAT_COLORS = {liveAction: '#20c997', anime: '#fd7e14', animation: '#0dcaf0'};
 
 function todayIso(): string {
     return new Date().toISOString().split('T')[0];
@@ -43,6 +43,7 @@ export function Stats() {
     const [start, setStart] = useState(daysAgoIso(14));
     const [end, setEnd] = useState(todayIso());
     const [splitFormat, setSplitFormat] = useState(true);
+    const [splitType, setSplitType] = useState(false);
     const [showTrend, setShowTrend] = useState(true);
 
     const [selectedKey, setSelectedKey] = useState<{ dateKey: string; label: string } | null>(null);
@@ -75,56 +76,109 @@ export function Stats() {
         [chartData, grouping]
     );
 
-    const chartJsData = useMemo(
-        () => ({
-            labels,
-            datasets: [
-                ...(showTrend
-                    ? [
-                        {
-                            type: 'line' as const,
-                            label: 'Trend',
-                            data: chartData.map((d) => d.totalMinutes ?? 0),
-                            borderColor: 'rgba(37, 99, 235, 0.8)',
-                            borderWidth: 2,
-                            pointRadius: 0,
-                            tension: 0.4,
-                        },
-                    ]
-                    : []),
-                ...(splitFormat
-                    ? [
-                        {
-                            type: 'bar' as const,
-                            label: 'Live Action',
-                            data: chartData.map((d) => d.liveActionMinutes ?? 0),
-                            backgroundColor: FORMAT_COLORS.liveAction,
-                        },
-                        {
-                            type: 'bar' as const,
-                            label: 'Anime',
-                            data: chartData.map((d) => d.animeMinutes ?? 0),
-                            backgroundColor: FORMAT_COLORS.anime,
-                        },
-                        {
-                            type: 'bar' as const,
-                            label: 'Animation',
-                            data: chartData.map((d) => d.animationMinutes ?? 0),
-                            backgroundColor: FORMAT_COLORS.animation,
-                        },
-                    ]
-                    : [
-                        {
-                            type: 'bar' as const,
-                            label: 'Total Watched',
-                            data: chartData.map((d) => d.totalMinutes ?? 0),
-                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                        },
-                    ]),
-            ],
-        }),
-        [labels, chartData, splitFormat, showTrend]
-    );
+    const chartJsData = useMemo(() => {
+        const trendDataset = showTrend
+            ? [
+                {
+                    type: 'line' as const,
+                    label: 'Trend',
+                    data: chartData.map((d) => d.totalMinutes ?? 0),
+                    borderColor: 'rgba(37, 99, 235, 0.8)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.4,
+                },
+            ]
+            : [];
+
+        let barDatasets: any[];
+
+        if (splitFormat && splitType) {
+            barDatasets = [
+                {
+                    type: 'bar' as const,
+                    label: 'Movie · Live Action',
+                    data: chartData.map((d) => d.movieLiveActionMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.liveActionDark
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Series · Live Action',
+                    data: chartData.map((d) => d.seriesLiveActionMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.liveActionLight
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Movie · Anime',
+                    data: chartData.map((d) => d.movieAnimeMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.animeDark
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Series · Anime',
+                    data: chartData.map((d) => d.seriesAnimeMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.animeLight
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Movie · Animation',
+                    data: chartData.map((d) => d.movieAnimationMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.animationDark
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Series · Animation',
+                    data: chartData.map((d) => d.seriesAnimationMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.animationLight
+                },
+            ];
+        } else if (splitFormat) {
+            barDatasets = [
+                {
+                    type: 'bar' as const,
+                    label: 'Live Action',
+                    data: chartData.map((d) => d.liveActionMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.liveActionDark
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Anime',
+                    data: chartData.map((d) => d.animeMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.animeDark
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Animation',
+                    data: chartData.map((d) => d.animationMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.animationDark
+                },
+            ];
+        } else if (splitType) {
+            barDatasets = [
+                {
+                    type: 'bar' as const,
+                    label: 'Movies',
+                    data: chartData.map((d) => d.movieMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.movieBlue
+                },
+                {
+                    type: 'bar' as const,
+                    label: 'Series',
+                    data: chartData.map((d) => d.seriesMinutes ?? 0),
+                    backgroundColor: CHART_COLORS.seriesEmerald
+                },
+            ];
+        } else {
+            barDatasets = [{
+                type: 'bar' as const,
+                label: 'Total Watched',
+                data: chartData.map((d) => d.totalMinutes ?? 0),
+                backgroundColor: CHART_COLORS.totalGreen
+            }];
+        }
+
+        return {labels, datasets: [...trendDataset, ...barDatasets]};
+    }, [labels, chartData, splitFormat, splitType, showTrend]);
 
     async function handleBarClick(index: number) {
         const point = chartData[index];
@@ -233,15 +287,10 @@ export function Stats() {
                         </span>
                     </h3>
 
-                    <div className="flex items-center gap-3 text-base">
-                        <label className="flex items-center gap-1.5 text-gray-700">
-                            <input type="checkbox" checked={showTrend}
-                                   onChange={(e) => setShowTrend(e.target.checked)}/> Trend Line
-                        </label>
-                        <label className="flex items-center gap-1.5 text-gray-700">
-                            <input type="checkbox" checked={splitFormat}
-                                   onChange={(e) => setSplitFormat(e.target.checked)}/> Split by Format
-                        </label>
+                    <div className="flex items-center gap-4">
+                        <ToggleSwitch label="Trend Line" checked={showTrend} onChange={setShowTrend}/>
+                        <ToggleSwitch label="Split by Type" checked={splitType} onChange={setSplitType}/>
+                        <ToggleSwitch label="Split by Format" checked={splitFormat} onChange={setSplitFormat}/>
                     </div>
                 </div>
 

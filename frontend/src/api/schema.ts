@@ -386,6 +386,18 @@ export interface components {
             animeMinutes?: number;
             /** Format: int64 */
             animationMinutes?: number;
+            /** Format: int64 */
+            movieLiveActionMinutes?: number;
+            /** Format: int64 */
+            movieAnimeMinutes?: number;
+            /** Format: int64 */
+            movieAnimationMinutes?: number;
+            /** Format: int64 */
+            seriesLiveActionMinutes?: number;
+            /** Format: int64 */
+            seriesAnimeMinutes?: number;
+            /** Format: int64 */
+            seriesAnimationMinutes?: number;
         };
         PageResponseMediaItemResponse: {
             content?: components["schemas"]["MediaItemResponse"][];

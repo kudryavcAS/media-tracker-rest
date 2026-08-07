@@ -8,4 +8,10 @@ public interface ChartDataProjection {
     Long getLiveActionMinutes();
     Long getAnimeMinutes();
     Long getAnimationMinutes();
+    Long getMovieLiveActionMinutes();
+    Long getMovieAnimeMinutes();
+    Long getMovieAnimationMinutes();
+    Long getSeriesLiveActionMinutes();
+    Long getSeriesAnimeMinutes();
+    Long getSeriesAnimationMinutes();
 }

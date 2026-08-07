@@ -26,7 +26,14 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
             
                    COALESCE(SUM(CASE WHEN mi.format = 'LIVE_ACTION' THEN w.minutes_watched ELSE 0 END), 0) as liveActionMinutes,
                    COALESCE(SUM(CASE WHEN mi.format = 'ANIME' THEN w.minutes_watched ELSE 0 END), 0) as animeMinutes,
-                   COALESCE(SUM(CASE WHEN mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as animationMinutes
+                   COALESCE(SUM(CASE WHEN mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as animationMinutes,
+            
+                   COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' AND mi.format = 'LIVE_ACTION' THEN w.minutes_watched ELSE 0 END), 0) as movieLiveActionMinutes,
+                   COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' AND mi.format = 'ANIME' THEN w.minutes_watched ELSE 0 END), 0) as movieAnimeMinutes,
+                   COALESCE(SUM(CASE WHEN mi.content_type = 'MOVIE' AND mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as movieAnimationMinutes,
+                   COALESCE(SUM(CASE WHEN mi.content_type = 'SERIES' AND mi.format = 'LIVE_ACTION' THEN w.minutes_watched ELSE 0 END), 0) as seriesLiveActionMinutes,
+                   COALESCE(SUM(CASE WHEN mi.content_type = 'SERIES' AND mi.format = 'ANIME' THEN w.minutes_watched ELSE 0 END), 0) as seriesAnimeMinutes,
+                   COALESCE(SUM(CASE WHEN mi.content_type = 'SERIES' AND mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as seriesAnimationMinutes
             
             FROM generate_series(
                      date_trunc(:unit, CAST(:startDate AS timestamp)),

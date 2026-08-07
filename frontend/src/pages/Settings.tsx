@@ -45,46 +45,48 @@ export function Settings() {
     return (
         <div className="max-w-2xl mx-auto p-6">
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-extrabold text-gray-900">Settings</h1>
-                <Link to="/" className="flex items-center gap-1 text-gray-700 hover:text-gray-900 text-sm font-medium">
-                    <ArrowLeft size={16}/> Back to Library
+                <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Settings</h1>
+                <Link to="/"
+                      className="flex items-center gap-1.5 text-gray-600 hover:text-gray-900 text-base font-semibold transition-colors">
+                    <ArrowLeft size={18}/> Back to Library
                 </Link>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm p-5">
-                <h2 className="font-semibold text-gray-900 mb-1">Data Backup</h2>
-                <p className="text-sm text-gray-600 mb-4">Save your entire library to a JSON file, or restore it from
-                    one.</p>
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">Data Backup</h2>
+                <p className="text-base text-gray-600 mb-4">
+                    Save your entire library to a JSON file, or restore it from one.
+                </p>
 
                 <div className="flex flex-col gap-3">
                     <button
                         onClick={handleExport}
                         disabled={busy}
-                        className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
+                        className="h-10 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
                     >
-                        <Download size={16}/> Download Backup (JSON)
+                        <Download size={18}/> Download Backup (JSON)
                     </button>
 
                     <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={busy}
-                        className="flex items-center justify-center gap-2 bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-amber-600 disabled:opacity-50"
+                        className="h-10 flex items-center justify-center gap-2 bg-amber-500 text-white px-4 rounded-lg text-base font-semibold hover:bg-amber-600 transition-colors disabled:opacity-50"
                     >
-                        <Upload size={16}/> Restore from Backup
+                        <Upload size={18}/> Restore from Backup
                     </button>
                     <input ref={fileInputRef} type="file" accept=".json" onChange={handleImportChange}
                            className="hidden"/>
 
-                    {status && <p className="text-sm text-gray-700">{status}</p>}
+                    {status && <p className="text-base text-gray-700 mt-1">{status}</p>}
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm p-5 mt-4">
-                <h2 className="font-semibold text-gray-900 mb-1">Statistics</h2>
-                <p className="text-sm text-gray-600 mb-4">View detailed watch time and library breakdowns.</p>
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">Statistics</h2>
+                <p className="text-base text-gray-600 mb-4">View detailed watch time and library breakdowns.</p>
                 <Link
                     to="/stats"
-                    className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700"
+                    className="h-10 flex items-center justify-center gap-2 bg-emerald-600 text-white px-4 rounded-lg text-base font-semibold hover:bg-emerald-700 transition-colors"
                 >
                     Open Statistics
                 </Link>

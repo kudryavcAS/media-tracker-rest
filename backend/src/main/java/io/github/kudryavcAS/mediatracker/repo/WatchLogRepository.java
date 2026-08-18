@@ -26,7 +26,7 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, UUID> {
             
                    COALESCE(SUM(CASE WHEN mi.format = 'LIVE_ACTION' THEN w.minutes_watched ELSE 0 END), 0) as liveActionMinutes,
                    COALESCE(SUM(CASE WHEN mi.format = 'ANIME' THEN w.minutes_watched ELSE 0 END), 0) as animeMinutes,
-                   COALESCE(SUM(CASE WHEN mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as animationMinutes,
+                   COALESCE(SUM(CASE WHEN mi.format = 'ANIMATION' THEN w.minutes_watched ELSE 0 END), 0) as animationMinutes
             
             FROM generate_series(
                      date_trunc(:unit, CAST(:startDate AS timestamp)),

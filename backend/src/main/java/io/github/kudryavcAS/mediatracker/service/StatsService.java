@@ -62,9 +62,7 @@ public class StatsService {
         return rawData.stream()
                 .map(d -> new ChartDataResponse(
                         d.getWatchDate(), d.getTotalMinutes(), d.getMovieMinutes(), d.getSeriesMinutes(),
-                        d.getLiveActionMinutes(), d.getAnimeMinutes(), d.getAnimationMinutes(),
-                        d.getMovieLiveActionMinutes(), d.getMovieAnimeMinutes(), d.getMovieAnimationMinutes(),
-                        d.getSeriesLiveActionMinutes(), d.getSeriesAnimeMinutes(), d.getSeriesAnimationMinutes()
+                        d.getLiveActionMinutes(), d.getAnimeMinutes(), d.getAnimationMinutes()
                 ))
                 .toList();
     }

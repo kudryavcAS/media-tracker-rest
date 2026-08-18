@@ -7,12 +7,6 @@ public record ChartDataResponse(
         long seriesMinutes,
         long liveActionMinutes,
         long animeMinutes,
-        long animationMinutes,
-        long movieLiveActionMinutes,
-        long movieAnimeMinutes,
-        long movieAnimationMinutes,
-        long seriesLiveActionMinutes,
-        long seriesAnimeMinutes,
-        long seriesAnimationMinutes
+        long animationMinutes
 ) {
 }

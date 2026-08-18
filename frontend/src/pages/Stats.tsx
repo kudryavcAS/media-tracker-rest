@@ -23,8 +23,11 @@ import {
 import {formatDuration} from '../utils/duration';
 import {CHART_COLORS} from '../utils/chartColors';
 import {ToggleSwitch} from '../components/ToggleSwitch';
+import {SegmentedControl} from '../components/SegmentedControl';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend);
+
+type GroupMode = 'FORMAT' | 'TYPE';
 
 function todayIso(): string {
     return new Date().toISOString().split('T')[0];
@@ -42,8 +45,7 @@ export function Stats() {
     const [grouping, setGrouping] = useState<'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>('DAY');
     const [start, setStart] = useState(daysAgoIso(14));
     const [end, setEnd] = useState(todayIso());
-    const [splitFormat, setSplitFormat] = useState(true);
-    const [splitType, setSplitType] = useState(false);
+    const [groupMode, setGroupMode] = useState<GroupMode>('FORMAT');
     const [showTrend, setShowTrend] = useState(true);
 
     const [selectedKey, setSelectedKey] = useState<{ dateKey: string; label: string } | null>(null);
@@ -83,7 +85,7 @@ export function Stats() {
                     type: 'line' as const,
                     label: 'Trend',
                     data: chartData.map((d) => d.totalMinutes ?? 0),
-                    borderColor: 'rgba(37, 99, 235, 0.8)',
+                    borderColor: 'rgba(30, 41, 59, 0.6)',
                     borderWidth: 2,
                     pointRadius: 0,
                     tension: 0.4,
@@ -91,94 +93,45 @@ export function Stats() {
             ]
             : [];
 
-        let barDatasets: any[];
-
-        if (splitFormat && splitType) {
-            barDatasets = [
-                {
-                    type: 'bar' as const,
-                    label: 'Movie · Live Action',
-                    data: chartData.map((d) => d.movieLiveActionMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.liveActionDark
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Series · Live Action',
-                    data: chartData.map((d) => d.seriesLiveActionMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.liveActionLight
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Movie · Anime',
-                    data: chartData.map((d) => d.movieAnimeMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.animeDark
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Series · Anime',
-                    data: chartData.map((d) => d.seriesAnimeMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.animeLight
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Movie · Animation',
-                    data: chartData.map((d) => d.movieAnimationMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.animationDark
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Series · Animation',
-                    data: chartData.map((d) => d.seriesAnimationMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.animationLight
-                },
-            ];
-        } else if (splitFormat) {
-            barDatasets = [
-                {
-                    type: 'bar' as const,
-                    label: 'Live Action',
-                    data: chartData.map((d) => d.liveActionMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.liveActionDark
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Anime',
-                    data: chartData.map((d) => d.animeMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.animeDark
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Animation',
-                    data: chartData.map((d) => d.animationMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.animationDark
-                },
-            ];
-        } else if (splitType) {
-            barDatasets = [
-                {
-                    type: 'bar' as const,
-                    label: 'Movies',
-                    data: chartData.map((d) => d.movieMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.movieBlue
-                },
-                {
-                    type: 'bar' as const,
-                    label: 'Series',
-                    data: chartData.map((d) => d.seriesMinutes ?? 0),
-                    backgroundColor: CHART_COLORS.seriesEmerald
-                },
-            ];
-        } else {
-            barDatasets = [{
-                type: 'bar' as const,
-                label: 'Total Watched',
-                data: chartData.map((d) => d.totalMinutes ?? 0),
-                backgroundColor: CHART_COLORS.totalGreen
-            }];
-        }
+        const barDatasets =
+            groupMode === 'FORMAT'
+                ? [
+                    {
+                        type: 'bar' as const,
+                        label: 'Live Action',
+                        data: chartData.map((d) => d.liveActionMinutes ?? 0),
+                        backgroundColor: CHART_COLORS.liveAction
+                    },
+                    {
+                        type: 'bar' as const,
+                        label: 'Anime',
+                        data: chartData.map((d) => d.animeMinutes ?? 0),
+                        backgroundColor: CHART_COLORS.anime
+                    },
+                    {
+                        type: 'bar' as const,
+                        label: 'Animation',
+                        data: chartData.map((d) => d.animationMinutes ?? 0),
+                        backgroundColor: CHART_COLORS.animation
+                    },
+                ]
+                : [
+                    {
+                        type: 'bar' as const,
+                        label: 'Movies',
+                        data: chartData.map((d) => d.movieMinutes ?? 0),
+                        backgroundColor: CHART_COLORS.movie
+                    },
+                    {
+                        type: 'bar' as const,
+                        label: 'Series',
+                        data: chartData.map((d) => d.seriesMinutes ?? 0),
+                        backgroundColor: CHART_COLORS.series
+                    },
+                ];
 
         return {labels, datasets: [...trendDataset, ...barDatasets]};
-    }, [labels, chartData, splitFormat, splitType, showTrend]);
+    }, [labels, chartData, groupMode, showTrend]);
 
     async function handleBarClick(index: number) {
         const point = chartData[index];
@@ -200,76 +153,76 @@ export function Stats() {
 
             {stats && (
                 <>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                        <div className="bg-emerald-600 text-white rounded-xl shadow-sm p-5 text-center">
-                            <p className="text-sm opacity-80 mb-1">Net Watch Time</p>
-                            <p className="text-3xl font-extrabold">{formatDuration(stats.watchedDurationMinutes ?? 0)}</p>
+                    <div className="grid grid-cols-2 gap-5 mb-5">
+                        <div className="bg-emerald-600 text-white rounded-xl shadow-sm p-7 text-center">
+                            <p className="text-base font-medium opacity-90 mb-2">Net Watch Time</p>
+                            <p className="text-5xl font-extrabold">{formatDuration(stats.watchedDurationMinutes ?? 0)}</p>
                         </div>
-                        <div className="bg-gray-600 text-white rounded-xl shadow-sm p-5 text-center">
-                            <p className="text-sm opacity-80 mb-1">Total Library Time</p>
-                            <p className="text-3xl font-extrabold">{formatDuration(stats.totalDurationMinutes ?? 0)}</p>
+                        <div className="bg-gray-700 text-white rounded-xl shadow-sm p-7 text-center">
+                            <p className="text-base font-medium opacity-90 mb-2">Total Library Time</p>
+                            <p className="text-5xl font-extrabold">{formatDuration(stats.totalDurationMinutes ?? 0)}</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                        <div className="bg-white rounded-xl shadow-sm p-5">
-                            <h3 className="font-semibold text-gray-900 mb-3">Time Distribution</h3>
-                            <div className="flex flex-col gap-2 text-sm">
-                                <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                    <div className="grid grid-cols-3 gap-5 mb-6">
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <h3 className="font-bold text-gray-900 text-lg mb-4">Time Distribution</h3>
+                            <div className="flex flex-col gap-3 text-base">
+                                <div className="flex justify-between border-b border-gray-100 pb-2">
                                     <span className="font-medium text-gray-800">Live Action</span>
                                     <span
-                                        className="text-gray-600">{formatDuration(stats.liveActionWatchedMinutes ?? 0)}</span>
+                                        className="text-gray-700 font-semibold">{formatDuration(stats.liveActionWatchedMinutes ?? 0)}</span>
                                 </div>
-                                <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                                <div className="flex justify-between border-b border-gray-100 pb-2">
                                     <span className="font-medium text-gray-800">Anime</span>
                                     <span
-                                        className="text-gray-600">{formatDuration(stats.animeWatchedMinutes ?? 0)}</span>
+                                        className="text-gray-700 font-semibold">{formatDuration(stats.animeWatchedMinutes ?? 0)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-medium text-gray-800">Animation</span>
                                     <span
-                                        className="text-gray-600">{formatDuration(stats.animationWatchedMinutes ?? 0)}</span>
+                                        className="text-gray-700 font-semibold">{formatDuration(stats.animationWatchedMinutes ?? 0)}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm p-5 text-center">
-                            <h3 className="font-semibold text-gray-900 mb-3">Total Items</h3>
-                            <p className="text-4xl font-extrabold text-gray-900 mb-3">{stats.totalItems}</p>
-                            <div className="flex gap-2 text-sm">
-                                <div className="flex-1 bg-gray-50 rounded-lg p-2">
-                                    <p className="font-bold text-blue-600">{stats.movieCount}</p>
+                        <div className="bg-white rounded-xl shadow-sm p-6 text-center">
+                            <h3 className="font-bold text-gray-900 text-lg mb-4">Total Items</h3>
+                            <p className="text-5xl font-extrabold text-gray-900 mb-4">{stats.totalItems}</p>
+                            <div className="flex gap-3 text-base">
+                                <div className="flex-1 bg-gray-50 rounded-lg p-3">
+                                    <p className="font-bold text-blue-600 text-xl">{stats.movieCount}</p>
                                     <p className="text-gray-600">Movies</p>
                                 </div>
-                                <div className="flex-1 bg-gray-50 rounded-lg p-2">
-                                    <p className="font-bold text-emerald-600">{stats.seriesCount}</p>
+                                <div className="flex-1 bg-gray-50 rounded-lg p-3">
+                                    <p className="font-bold text-emerald-600 text-xl">{stats.seriesCount}</p>
                                     <p className="text-gray-600">Series</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm p-5">
-                            <h3 className="font-semibold text-gray-900 mb-3 text-lg">Statuses</h3>
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <h3 className="font-bold text-gray-900 text-lg mb-4">Statuses</h3>
                             <div className="flex flex-col gap-3 text-base">
                                 <div className="flex justify-between items-center">
                                     <span
                                         className="bg-gray-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Completed</span>
-                                    <span className="font-bold text-gray-900">{stats.completedCount}</span>
+                                    <span className="font-bold text-gray-900 text-lg">{stats.completedCount}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span
                                         className="bg-amber-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Watching</span>
-                                    <span className="font-bold text-gray-900">{stats.watchingCount}</span>
+                                    <span className="font-bold text-gray-900 text-lg">{stats.watchingCount}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span
                                         className="bg-sky-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Planned</span>
-                                    <span className="font-bold text-gray-900">{stats.plannedCount}</span>
+                                    <span className="font-bold text-gray-900 text-lg">{stats.plannedCount}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span
                                         className="bg-red-500 text-white text-sm font-semibold px-2.5 py-1 rounded-md">Dropped</span>
-                                    <span className="font-bold text-gray-900">{stats.droppedCount}</span>
+                                    <span className="font-bold text-gray-900 text-lg">{stats.droppedCount}</span>
                                 </div>
                             </div>
                         </div>
@@ -277,31 +230,45 @@ export function Stats() {
                 </>
             )}
 
-            <div className="bg-white rounded-xl shadow-sm p-5">
+            <div className="bg-white rounded-xl shadow-sm p-6">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="font-bold text-gray-900 text-lg">
                         Watch Activity{' '}
                         <span
-                            className="ml-2 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2 py-1 rounded-full">
+                            className="ml-2 bg-emerald-100 text-emerald-700 text-sm font-semibold px-2.5 py-1 rounded-full">
                             Total: {formatDuration(totalPeriodMinutes)}
                         </span>
                     </h3>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-5">
+                        <SegmentedControl
+                            value={groupMode}
+                            onChange={setGroupMode}
+                            options={[
+                                {value: 'FORMAT', label: 'By Format'},
+                                {value: 'TYPE', label: 'By Type'},
+                            ]}
+                        />
                         <ToggleSwitch label="Trend Line" checked={showTrend} onChange={setShowTrend}/>
-                        <ToggleSwitch label="Split by Type" checked={splitType} onChange={setSplitType}/>
-                        <ToggleSwitch label="Split by Format" checked={splitFormat} onChange={setSplitFormat}/>
                     </div>
                 </div>
 
                 <div
                     className="flex flex-wrap items-center gap-3 mb-6 bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
                     <span className="text-sm font-semibold text-gray-700 ml-1">Period:</span>
-                    <input type="date" value={start} onChange={(e) => setStart(e.target.value)}
-                           className="h-10 border border-gray-300 rounded-lg px-3 text-base text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow"/>
+                    <input
+                        type="date"
+                        value={start}
+                        onChange={(e) => setStart(e.target.value)}
+                        className="h-10 border border-gray-300 rounded-lg px-3 text-base text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow"
+                    />
                     <span className="text-gray-400">—</span>
-                    <input type="date" value={end} onChange={(e) => setEnd(e.target.value)}
-                           className="h-10 border border-gray-300 rounded-lg px-3 text-base text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow"/>
+                    <input
+                        type="date"
+                        value={end}
+                        onChange={(e) => setEnd(e.target.value)}
+                        className="h-10 border border-gray-300 rounded-lg px-3 text-base text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow"
+                    />
 
                     <div className="w-px h-6 bg-gray-200 mx-2"/>
 

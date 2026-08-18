@@ -133,6 +133,35 @@ export function Stats() {
         return {labels, datasets: [...trendDataset, ...barDatasets]};
     }, [labels, chartData, groupMode, showTrend]);
 
+    const groupedDetails = useMemo(() => {
+        if (!details) return null;
+
+        const groups = new Map<string, {
+            title: string;
+            mediaItemId?: string;
+            episodes: number;
+            minutesWatched: number;
+        }>();
+
+        details.forEach((d) => {
+            const key = `${d.mediaItemId}`;
+            if (!groups.has(key)) {
+                groups.set(key, {
+                    title: d.title ?? '',
+                    mediaItemId: d.mediaItemId,
+                    episodes: d.episodes ?? 0,
+                    minutesWatched: d.minutesWatched ?? 0,
+                });
+            } else {
+                const g = groups.get(key)!;
+                g.episodes += d.episodes ?? 0;
+                g.minutesWatched += d.minutesWatched ?? 0;
+            }
+        });
+
+        return Array.from(groups.values()).sort((a, b) => b.minutesWatched - a.minutesWatched);
+    }, [details]);
+
     async function handleBarClick(index: number) {
         const point = chartData[index];
         if (!point?.watchDate) return;
@@ -304,16 +333,15 @@ export function Stats() {
                         {details === null && <p className="text-sm text-gray-400">Loading...</p>}
                         {details && details.length === 0 &&
                             <p className="text-sm text-gray-400">No details available.</p>}
-                        {details && details.length > 0 && (
+                        {groupedDetails && groupedDetails.length > 0 && (
                             <ul className="flex flex-col gap-1.5 max-h-52 overflow-y-auto">
-                                {details.map((d) => (
-                                    <li key={d.logId}
-                                        className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
-                                        <span className="font-medium text-gray-800">{d.title}</span>
+                                {groupedDetails.map((g) => (
+                                    <li key={g.mediaItemId} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                                        <span className="font-medium text-gray-800">{g.title}</span>
                                         <span className="text-gray-600">
-                                            {d.episodes ? `${d.episodes} episode(s) — ` : ''}
-                                            {d.minutesWatched} min
-                                        </span>
+                    {g.episodes > 0 ? `${g.episodes} episode(s) — ` : ''}
+                                            {g.minutesWatched} min
+                </span>
                                     </li>
                                 ))}
                             </ul>

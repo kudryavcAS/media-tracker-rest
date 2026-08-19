@@ -110,38 +110,33 @@ export function Library() {
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <table className="w-full table-fixed text-left">
                     <colgroup>
-                        <col className="w-[10%]"/>
-                        <col className="w-[28%]"/>
-                        <col className="w-[8%]"/>
-                        <col className="w-[20%]"/>
-                        <col className="w-[10%]"/>
-                        <col className="w-[14%]"/>
-                        <col className="w-[10%]"/>
+                        <col className="w-[9%]" />
+                        <col className="w-[34%]" />
+                        <col className="w-[6%]" />
+                        <col className="w-[21%]" />
+                        <col className="w-[9%]" />
+                        <col className="w-[7%]" />
+                        <col className="w-[14%]" />
                     </colgroup>
                     <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">
                     <tr>
-                        <th className="py-3 px-4">Format</th>
-                        <th className="py-3 px-4">
-                            <SortableHeader label="Title" field="title" activeField={sortBy} activeDir={sortDir}
-                                            defaultDir="ASC" onSort={handleSort}/>
+                        <th className="py-3 px-4 text-left">Format</th>
+                        <th className="py-3 px-4 text-left">
+                            <SortableHeader label="Title" field="title" activeField={sortBy} activeDir={sortDir} defaultDir="ASC" onSort={handleSort} />
                         </th>
-                        <th className="py-3 px-4">
-                            <SortableHeader label="Year" field="releaseYear" activeField={sortBy} activeDir={sortDir}
-                                            defaultDir="DESC" onSort={handleSort}/>
+                        <th className="py-3 px-4 text-left">
+                            <SortableHeader label="Year" field="releaseYear" activeField={sortBy} activeDir={sortDir} defaultDir="DESC" onSort={handleSort} />
                         </th>
-                        <th className="py-3 px-4">
-                            <SortableHeader label="Director" field="directors" activeField={sortBy} activeDir={sortDir}
-                                            defaultDir="ASC" onSort={handleSort}/>
+                        <th className="py-3 px-4 text-left">
+                            <SortableHeader label="Director" field="directors" activeField={sortBy} activeDir={sortDir} defaultDir="ASC" onSort={handleSort} />
                         </th>
-                        <th className="py-3 px-4">
-                            <SortableHeader label="Duration (min)" field="durationMinutes" activeField={sortBy}
-                                            activeDir={sortDir} defaultDir="DESC" onSort={handleSort}/>
+                        <th className="py-3 px-4 text-left">
+                            <SortableHeader label="Duration" field="durationMinutes" activeField={sortBy} activeDir={sortDir} defaultDir="DESC" onSort={handleSort} />
                         </th>
-                        <th className="py-3 px-4">
-                            <SortableHeader label="Status" field="status" activeField={sortBy} activeDir={sortDir}
-                                            defaultDir="DESC" onSort={handleSort}/>
+                        <th className="py-3 px-4 text-left">
+                            <SortableHeader label="Status" field="status" activeField={sortBy} activeDir={sortDir} defaultDir="DESC" onSort={handleSort} />
                         </th>
-                        <th className="py-3 px-4 text-right">Actions</th>
+                        <th className="py-3 px-4 text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>

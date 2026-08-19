@@ -11,6 +11,7 @@ import {
 import {formatBadgeClass, formatLabel, statusBadgeClass} from '../utils/badges';
 import {DateActionButton} from './DateActionButton';
 import {highlightMatch} from '../utils/highlight';
+import {formatDuration} from '../utils/duration';
 import {Link} from 'react-router-dom';
 
 interface MediaRowProps {
@@ -141,8 +142,9 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
 
                 <td className="py-3 px-4 text-gray-800 align-middle">{item.releaseYear}</td>
                 <td className="py-3 px-4 text-gray-800 align-middle truncate">{highlightMatch(item.directors, query)}</td>
-                <td className="py-3 px-4 text-gray-800 align-middle">{item.durationMinutes}</td>
-
+                <td className="py-3 px-4 text-gray-800 align-middle">
+                    {item.durationMinutes != null ? formatDuration(item.durationMinutes) : '—'}
+                </td>
                 <td className="py-3 px-4 align-middle">
                     <span
                         className={`whitespace-nowrap text-white text-sm font-semibold px-2.5 py-1 rounded-md ${statusBadgeClass(item.status)}`}>

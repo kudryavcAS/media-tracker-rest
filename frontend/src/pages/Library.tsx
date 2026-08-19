@@ -110,12 +110,12 @@ export function Library() {
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <table className="w-full table-fixed text-left">
                     <colgroup>
-                        <col className="w-[12%]"/>
-                        <col className="w-[26%]"/>
+                        <col className="w-[10%]"/>
+                        <col className="w-[28%]"/>
                         <col className="w-[8%]"/>
                         <col className="w-[20%]"/>
-                        <col className="w-[12%]"/>
-                        <col className="w-[12%]"/>
+                        <col className="w-[10%]"/>
+                        <col className="w-[14%]"/>
                         <col className="w-[10%]"/>
                     </colgroup>
                     <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">

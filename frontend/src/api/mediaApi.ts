@@ -76,3 +76,13 @@ export async function updateItem(id: string, request: MediaItemRequest): Promise
     const response = await apiClient.put(`/api/v1/media/${id}`, request);
     return response.data;
 }
+
+export async function archiveItem(id: string): Promise<MediaItemResponse> {
+    const response = await apiClient.patch(`/api/v1/media/${id}/archive`);
+    return response.data;
+}
+
+export async function unarchiveItem(id: string): Promise<MediaItemResponse> {
+    const response = await apiClient.patch(`/api/v1/media/${id}/unarchive`);
+    return response.data;
+}

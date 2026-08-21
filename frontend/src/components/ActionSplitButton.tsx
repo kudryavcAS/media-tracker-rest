@@ -50,34 +50,33 @@ export function ActionSplitButton({mode, disabled, onConfirm}: ActionSplitButton
 
             {open && (
                 <div
-                    className="absolute top-full right-0 mt-1 z-20 bg-white border border-gray-300 rounded-md shadow-lg p-3 flex flex-col gap-3 w-64">
-                    {mode === 'addEpisodes' && (
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-600 mb-1">Episodes</label>
-                            <div
-                                className="inline-flex rounded-md border border-gray-300 overflow-hidden divide-x divide-gray-300 w-full">
-                                <button
-                                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                                    className="px-3 py-1.5 text-gray-600 hover:bg-gray-50 transition-colors"
-                                >
-                                    <Minus size={14}/>
-                                </button>
-                                <input
-                                    type="number"
-                                    min={1}
-                                    value={quantity}
-                                    onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
-                                    className="w-full text-center text-sm outline-none"
-                                />
-                                <button
-                                    onClick={() => setQuantity((q) => q + 1)}
-                                    className="px-3 py-1.5 text-gray-600 hover:bg-gray-50 transition-colors"
-                                >
-                                    <Plus size={14}/>
-                                </button>
-                            </div>
+                    className="absolute top-full left-0 mt-1 z-20 bg-white border border-gray-300 rounded-md shadow-lg p-3 flex flex-col gap-3 w-64">       {mode === 'addEpisodes' && (
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Episodes</label>
+                        <div
+                            className="inline-flex rounded-md border border-gray-300 overflow-hidden divide-x divide-gray-300 w-full">
+                            <button
+                                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                                className="px-3 py-1.5 text-gray-600 hover:bg-gray-50 transition-colors"
+                            >
+                                <Minus size={14}/>
+                            </button>
+                            <input
+                                type="number"
+                                min={1}
+                                value={quantity}
+                                onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+                                className="w-full text-center text-sm outline-none"
+                            />
+                            <button
+                                onClick={() => setQuantity((q) => q + 1)}
+                                className="px-3 py-1.5 text-gray-600 hover:bg-gray-50 transition-colors"
+                            >
+                                <Plus size={14}/>
+                            </button>
                         </div>
-                    )}
+                    </div>
+                )}
 
                     <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">Date</label>

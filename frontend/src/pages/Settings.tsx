@@ -82,6 +82,17 @@ export function Settings() {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm p-5 mt-4">
+                <h2 className="font-bold text-gray-900 text-lg mb-1">Archived Items</h2>
+                <p className="text-base text-gray-600 mb-4">View and restore items you've archived.</p>
+                <Link
+                    to="/settings/archived"
+                    className="flex items-center justify-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg text-base font-semibold hover:bg-gray-700"
+                >
+                    View Archived
+                </Link>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm p-5 mt-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-1">Statistics</h2>
                 <p className="text-base text-gray-600 mb-4">View detailed watch time and library breakdowns.</p>
                 <Link

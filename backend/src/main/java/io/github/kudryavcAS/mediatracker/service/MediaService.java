@@ -64,13 +64,15 @@ public class MediaService {
 
         Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, formats, status, query, includeArchived);
 
-        Sort sort = Sort.unsorted();
+        Sort sort;
         if (sortBy != null) {
             if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
                 throw new IllegalArgumentException("Cannot sort by field: " + sortBy);
             }
             Sort.Direction direction = Sort.Direction.fromString(sortDir != null ? sortDir : "ASC");
             sort = Sort.by(direction, sortBy);
+        } else {
+            sort = Sort.by(Sort.Direction.ASC, "id");
         }
 
         Pageable pageable = PageRequest.of(Math.max(0, page - 1), size, sort);

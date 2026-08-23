@@ -96,12 +96,21 @@ public class MediaService {
         entity.setReleaseYear(request.releaseYear());
         entity.setDurationMinutes(request.durationMinutes());
         entity.setDirectors(request.directors());
-
         entity.setStatus(request.status() != null ? request.status() : entity.getStatus());
 
-        if (entity instanceof Series series && request.totalEpisodes() != null) {
+        if (entity instanceof Series series) {
+            int total = request.totalEpisodes() != null ? request.totalEpisodes() : 0;
+            int watched = request.watchedEpisodes() != null ? request.watchedEpisodes() : 0;
+
+            if (total > 0) {
+                watched = Math.min(watched, total);
+            }
+            watched = Math.max(0, watched);
+
             series.setTotalEpisodes(request.totalEpisodes());
-            series.setWatchedEpisodes(request.watchedEpisodes() != null ? request.watchedEpisodes() : 0);
+            series.setWatchedEpisodes(watched);
+
+            syncSeriesStatus(series, watched, total);
         }
 
         return mapToResponse(mediaRepository.save(entity));

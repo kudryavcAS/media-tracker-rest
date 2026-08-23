@@ -45,7 +45,7 @@ export function Stats() {
     const [grouping, setGrouping] = useState<'DAY' | 'WEEK' | 'MONTH' | 'YEAR'>('DAY');
     const [start, setStart] = useState(daysAgoIso(14));
     const [end, setEnd] = useState(todayIso());
-    const [groupMode, setGroupMode] = useState<GroupMode>('FORMAT');
+    const [groupMode, setGroupMode] = useState<GroupMode>('TYPE');
     const [showTrend, setShowTrend] = useState(true);
 
     const [selectedKey, setSelectedKey] = useState<{ dateKey: string; label: string } | null>(null);
@@ -171,7 +171,7 @@ export function Stats() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="max-w-7xl mx-auto p-6">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Statistics</h1>
                 <Link to="/"

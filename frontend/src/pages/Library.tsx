@@ -136,7 +136,7 @@ export function Library() {
                         <th className="py-3 px-4 text-left">
                             <SortableHeader label="Status" field="status" activeField={sortBy} activeDir={sortDir} defaultDir="DESC" onSort={handleSort} />
                         </th>
-                        <th className="py-3 px-4 text-center">Actions</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
                     </tr>
                     </thead>
                     <tbody>

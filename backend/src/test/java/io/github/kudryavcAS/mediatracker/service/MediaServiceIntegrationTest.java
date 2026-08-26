@@ -69,12 +69,12 @@ class MediaServiceIntegrationTest extends AbstractIntegrationTest {
         entityManager.flush();
         entityManager.clear();
 
-        var visiblePage = mediaService.getFilteredItems(null, null, null, null, false, 1, 50);
+        var visiblePage = mediaService.getFilteredItems(null, null, null, null, false, null, null, 1, 50);
         assertThat(visiblePage.getContent())
                 .extracting(MediaItemResponse::id)
                 .doesNotContain(created.id());
 
-        var includingArchivedPage = mediaService.getFilteredItems(null, null, null, null, true, 1, 50);
+        var includingArchivedPage = mediaService.getFilteredItems(null, null, null, null, true, null, null, 1, 50);
         assertThat(includingArchivedPage.getContent())
                 .extracting(MediaItemResponse::id)
                 .contains(created.id());

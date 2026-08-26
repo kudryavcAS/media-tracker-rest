@@ -81,13 +81,13 @@ class BackupServiceIntegrationTest extends AbstractIntegrationTest {
         MediaItemResponse restoredSeries = mediaService.getItemById(series.id());
         assertThat(restoredSeries.watchedEpisodes()).isEqualTo(3);
 
-        var withArchived = mediaService.getFilteredItems(null, null, null, null, true, 1, 50);
+        var withArchived = mediaService.getFilteredItems(null, null, null, null, true, null, null, 1, 50);
         assertThat(withArchived.getContent())
                 .extracting(MediaItemResponse::id)
                 .contains(archivedMovie.id());
         assertThat(mediaService.getItemById(archivedMovie.id()).archived()).isTrue();
 
-        var withoutArchived = mediaService.getFilteredItems(null, null, null, null, false, 1, 50);
+        var withoutArchived = mediaService.getFilteredItems(null, null, null, null, false, null, null, 1, 50);
         assertThat(withoutArchived.getContent())
                 .extracting(MediaItemResponse::id)
                 .doesNotContain(archivedMovie.id());

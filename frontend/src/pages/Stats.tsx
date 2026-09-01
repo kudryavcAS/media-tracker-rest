@@ -3,16 +3,6 @@ import {Link} from 'react-router-dom';
 import {ArrowLeft} from 'lucide-react';
 import {Chart} from 'react-chartjs-2';
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    LineElement,
-    PointElement,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import {
     getOverallStats,
     getChartData,
     getWatchDetails,
@@ -24,8 +14,20 @@ import {formatDuration} from '../utils/duration';
 import {CHART_COLORS} from '../utils/chartColors';
 import {ToggleSwitch} from '../components/ToggleSwitch';
 import {SegmentedControl} from '../components/SegmentedControl';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    LineElement,
+    PointElement,
+    BarController,
+    LineController,
+    Tooltip,
+    Legend,
+} from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, BarController, LineController, Tooltip, Legend);
 
 type GroupMode = 'FORMAT' | 'TYPE';
 
@@ -336,7 +338,8 @@ export function Stats() {
                         {groupedDetails && groupedDetails.length > 0 && (
                             <ul className="flex flex-col gap-1.5 max-h-52 overflow-y-auto">
                                 {groupedDetails.map((g) => (
-                                    <li key={g.mediaItemId} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                                    <li key={g.mediaItemId}
+                                        className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
                                         <span className="font-medium text-gray-800">{g.title}</span>
                                         <span className="text-gray-600">
                     {g.episodes > 0 ? `${g.episodes} episode(s) — ` : ''}

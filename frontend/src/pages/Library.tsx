@@ -6,6 +6,7 @@ import {FilterBar} from '../components/FilterBar';
 import {MediaRow} from '../components/MediaRow';
 import {PaginationBar} from '../components/PaginationBar';
 import {SortableHeader} from '../components/SortableHeader';
+import {shutdownServer} from "../api/adminAPI.ts";
 
 const PAGE_SIZE = 50;
 
@@ -64,6 +65,16 @@ export function Library() {
         setSortDir(dir);
     }
 
+    async function handleShutdown() {
+        if (!confirm('Shut down the server? You will need to relaunch it to use the app again.')) return;
+        try {
+            await shutdownServer();
+        } catch {
+        }
+        document.body.innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#6b7280;font-size:1.25rem;">Server stopped. You can close this tab.</div>';
+    }
+
     return (
         <div className="max-w-7xl mx-auto p-6">
             <div className="flex items-center justify-between mb-6">
@@ -71,7 +82,10 @@ export function Library() {
 
                 <div className="flex items-center gap-2.5">
                     <button
-                        className="w-10 h-10 flex items-center justify-center rounded-lg border border-red-300 text-red-500 hover:bg-red-50 transition-colors">
+                        onClick={handleShutdown}
+                        className="p-2 rounded-lg border border-red-300 text-red-500 hover:bg-red-50"
+                        title="Shut down server"
+                    >
                         <Power size={18}/>
                     </button>
                     <Link to="/media/new/movie"
@@ -110,31 +124,36 @@ export function Library() {
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <table className="w-full table-fixed text-left">
                     <colgroup>
-                        <col className="w-[9%]" />
-                        <col className="w-[34%]" />
-                        <col className="w-[6%]" />
-                        <col className="w-[21%]" />
-                        <col className="w-[9%]" />
-                        <col className="w-[7%]" />
-                        <col className="w-[14%]" />
+                        <col className="w-[9%]"/>
+                        <col className="w-[34%]"/>
+                        <col className="w-[6%]"/>
+                        <col className="w-[21%]"/>
+                        <col className="w-[9%]"/>
+                        <col className="w-[7%]"/>
+                        <col className="w-[14%]"/>
                     </colgroup>
                     <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">
                     <tr>
                         <th className="py-3 px-4 text-left">Format</th>
                         <th className="py-3 px-4 text-left">
-                            <SortableHeader label="Title" field="title" activeField={sortBy} activeDir={sortDir} defaultDir="ASC" onSort={handleSort} />
+                            <SortableHeader label="Title" field="title" activeField={sortBy} activeDir={sortDir}
+                                            defaultDir="ASC" onSort={handleSort}/>
                         </th>
                         <th className="py-3 px-4 text-left">
-                            <SortableHeader label="Year" field="releaseYear" activeField={sortBy} activeDir={sortDir} defaultDir="DESC" onSort={handleSort} />
+                            <SortableHeader label="Year" field="releaseYear" activeField={sortBy} activeDir={sortDir}
+                                            defaultDir="DESC" onSort={handleSort}/>
                         </th>
                         <th className="py-3 px-4 text-left">
-                            <SortableHeader label="Director" field="directors" activeField={sortBy} activeDir={sortDir} defaultDir="ASC" onSort={handleSort} />
+                            <SortableHeader label="Director" field="directors" activeField={sortBy} activeDir={sortDir}
+                                            defaultDir="ASC" onSort={handleSort}/>
                         </th>
                         <th className="py-3 px-4 text-left">
-                            <SortableHeader label="Duration" field="durationMinutes" activeField={sortBy} activeDir={sortDir} defaultDir="DESC" onSort={handleSort} />
+                            <SortableHeader label="Duration" field="durationMinutes" activeField={sortBy}
+                                            activeDir={sortDir} defaultDir="DESC" onSort={handleSort}/>
                         </th>
                         <th className="py-3 px-4 text-left">
-                            <SortableHeader label="Status" field="status" activeField={sortBy} activeDir={sortDir} defaultDir="DESC" onSort={handleSort} />
+                            <SortableHeader label="Status" field="status" activeField={sortBy} activeDir={sortDir}
+                                            defaultDir="DESC" onSort={handleSort}/>
                         </th>
                         <th className="py-3 px-4 text-right">Actions</th>
                     </tr>

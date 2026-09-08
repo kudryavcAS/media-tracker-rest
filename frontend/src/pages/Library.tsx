@@ -66,7 +66,6 @@ export function Library() {
     }
 
     async function handleShutdown() {
-        if (!confirm('Shut down the server? You will need to relaunch it to use the app again.')) return;
         try {
             await shutdownServer();
         } catch {
@@ -83,10 +82,10 @@ export function Library() {
                 <div className="flex items-center gap-2.5">
                     <button
                         onClick={handleShutdown}
-                        className="p-2 rounded-lg border border-red-300 text-red-500 hover:bg-red-50"
+                        className="h-10 w-10 flex items-center justify-center rounded-lg border border-red-300 text-red-500 hover:bg-red-50 transition-colors"
                         title="Shut down server"
                     >
-                        <Power size={18}/>
+                        <Power size={18} />
                     </button>
                     <Link to="/media/new/movie"
                           className="h-10 flex items-center gap-1.5 bg-blue-600 text-white px-4 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">

@@ -87,7 +87,7 @@ export function Stats() {
                     type: 'line' as const,
                     label: 'Trend',
                     data: chartData.map((d) => d.totalMinutes ?? 0),
-                    borderColor: 'rgba(30, 41, 59, 0.6)',
+                    borderColor: 'rgba(13, 110, 253, 0.8)',
                     borderWidth: 2,
                     pointRadius: 0,
                     tension: 0.4,

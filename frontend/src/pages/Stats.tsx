@@ -321,6 +321,7 @@ export function Stats() {
                     data={chartJsData}
                     options={{
                         responsive: true,
+                        aspectRatio: 3.5,
                         interaction: {mode: 'index', intersect: false},
                         onClick: (_e, elements) => {
                             if (elements.length > 0) handleBarClick(elements[0].index);

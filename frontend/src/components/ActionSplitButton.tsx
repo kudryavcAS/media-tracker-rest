@@ -50,7 +50,7 @@ export function ActionSplitButton({mode, disabled, onConfirm}: ActionSplitButton
 
             {open && (
                 <div
-                    className="absolute top-full left-0 mt-1 z-20 bg-white border border-gray-300 rounded-md shadow-lg p-3 flex flex-col gap-3 w-64">       {mode === 'addEpisodes' && (
+                    className="absolute top-full left-0 mt-1 z-30 bg-white border border-gray-300 rounded-md shadow-lg p-3 flex flex-col gap-3 w-64">       {mode === 'addEpisodes' && (
                     <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">Episodes</label>
                         <div

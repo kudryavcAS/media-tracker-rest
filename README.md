@@ -1,4 +1,5 @@
 # Media Tracker
+![Backend CI](https://github.com/kudryavcAS/media-tracker-rest/actions/workflows/backend-ci.yml/badge.svg)
 
 A full-stack web application designed to track and analyze personal movie and TV series watch history.
 

@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from 'react';
 import {Link} from 'react-router-dom';
-import {ArrowLeft} from 'lucide-react';
+import {ArrowLeft, X} from 'lucide-react';
 import {Chart} from 'react-chartjs-2';
 import {
     getOverallStats,
@@ -332,7 +332,20 @@ export function Stats() {
 
                 {selectedKey && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
-                        <h4 className="font-semibold text-gray-700 mb-2">Activity for {selectedKey.label}</h4>
+                        <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-semibold text-gray-700">Activity for {selectedKey.label}</h4>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSelectedKey(null);
+                                    setDetails(null);
+                                }}
+                                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                                title="Close details"
+                            >
+                                <X size={18}/>
+                            </button>
+                        </div>
                         {details === null && <p className="text-sm text-gray-400">Loading...</p>}
                         {details && details.length === 0 &&
                             <p className="text-sm text-gray-400">No details available.</p>}

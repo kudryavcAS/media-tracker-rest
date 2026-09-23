@@ -193,8 +193,8 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
                                     <div>
                                         <h5 className="font-semibold text-gray-700 mb-2">Watch Progress</h5>
                                         <div className="flex items-center gap-4">
-                                            <span className="font-bold text-lg">
-                                                {item.watchedEpisodes ?? 0} / {item.totalEpisodes ?? '?'}
+                                            <span className="font-bold text-lg text-gray-900">
+                                                {item.watchedEpisodes ?? 0} / {item.totalEpisodes ?? '?'} ({progressPct}%)
                                             </span>
                                             <div className="h-4 bg-gray-200 rounded-full overflow-hidden w-48">
                                                 <div

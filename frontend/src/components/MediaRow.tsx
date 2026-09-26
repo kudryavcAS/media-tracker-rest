@@ -198,11 +198,9 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
                                             </span>
                                             <div className="h-4 bg-gray-200 rounded-full overflow-hidden w-48">
                                                 <div
-                                                    className="h-full bg-emerald-500 flex items-center justify-center text-[10px] text-white"
+                                                    className="h-full bg-emerald-500"
                                                     style={{width: `${progressPct}%`}}
-                                                >
-                                                    {progressPct > 10 ? `${progressPct}%` : ''}
-                                                </div>
+                                                />
                                             </div>
                                             <ActionSplitButton mode="addEpisodes"
                                                                onConfirm={handleAdvancedAddEpisodes}/>

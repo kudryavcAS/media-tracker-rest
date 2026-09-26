@@ -50,6 +50,9 @@ export function Stats() {
     const [groupMode, setGroupMode] = useState<GroupMode>('TYPE');
     const [showTrend, setShowTrend] = useState(true);
 
+    const [visibleFormats, setVisibleFormats] = useState<string[]>(['LIVE_ACTION', 'ANIME', 'ANIMATION']);
+    const [visibleTypes, setVisibleTypes] = useState<string[]>(['MOVIE', 'SERIES']);
+
     const [selectedKey, setSelectedKey] = useState<{ dateKey: string; label: string } | null>(null);
     const [details, setDetails] = useState<WatchDetailResponse[] | null>(null);
 
@@ -63,7 +66,39 @@ export function Stats() {
         setDetails(null);
     }, [start, end, grouping]);
 
-    const totalPeriodMinutes = useMemo(() => chartData.reduce((acc, d) => acc + (d.totalMinutes ?? 0), 0), [chartData]);
+    function toggleFormat(fmt: string) {
+        setVisibleFormats((prev) =>
+            prev.includes(fmt) ? prev.filter((f) => f !== fmt) : [...prev, fmt]
+        );
+    }
+
+    function toggleType(type: string) {
+        setVisibleTypes((prev) =>
+            prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+        );
+    }
+
+    const visibleMinutesPerPoint = useMemo(() => {
+        return chartData.map((d) => {
+            if (groupMode === 'FORMAT') {
+                let sum = 0;
+                if (visibleFormats.includes('LIVE_ACTION')) sum += (d.liveActionMinutes ?? 0);
+                if (visibleFormats.includes('ANIME')) sum += (d.animeMinutes ?? 0);
+                if (visibleFormats.includes('ANIMATION')) sum += (d.animationMinutes ?? 0);
+                return sum;
+            } else {
+                let sum = 0;
+                if (visibleTypes.includes('MOVIE')) sum += (d.movieMinutes ?? 0);
+                if (visibleTypes.includes('SERIES')) sum += (d.seriesMinutes ?? 0);
+                return sum;
+            }
+        });
+    }, [chartData, groupMode, visibleFormats, visibleTypes]);
+
+    const totalPeriodMinutes = useMemo(
+        () => visibleMinutesPerPoint.reduce((acc, v) => acc + v, 0),
+        [visibleMinutesPerPoint]
+    );
 
     const labels = useMemo(
         () =>
@@ -86,7 +121,7 @@ export function Stats() {
                 {
                     type: 'line' as const,
                     label: 'Trend',
-                    data: chartData.map((d) => d.totalMinutes ?? 0),
+                    data: visibleMinutesPerPoint,
                     borderColor: 'rgba(13, 110, 253, 0.8)',
                     borderWidth: 2,
                     pointRadius: 0,
@@ -98,42 +133,52 @@ export function Stats() {
         const barDatasets =
             groupMode === 'FORMAT'
                 ? [
-                    {
-                        type: 'bar' as const,
-                        label: 'Live Action',
-                        data: chartData.map((d) => d.liveActionMinutes ?? 0),
-                        backgroundColor: CHART_COLORS.liveAction
-                    },
-                    {
-                        type: 'bar' as const,
-                        label: 'Anime',
-                        data: chartData.map((d) => d.animeMinutes ?? 0),
-                        backgroundColor: CHART_COLORS.anime
-                    },
-                    {
-                        type: 'bar' as const,
-                        label: 'Animation',
-                        data: chartData.map((d) => d.animationMinutes ?? 0),
-                        backgroundColor: CHART_COLORS.animation
-                    },
+                    ...(visibleFormats.includes('LIVE_ACTION')
+                        ? [{
+                            type: 'bar' as const,
+                            label: 'Live Action',
+                            data: chartData.map((d) => d.liveActionMinutes ?? 0),
+                            backgroundColor: CHART_COLORS.liveAction
+                        }]
+                        : []),
+                    ...(visibleFormats.includes('ANIME')
+                        ? [{
+                            type: 'bar' as const,
+                            label: 'Anime',
+                            data: chartData.map((d) => d.animeMinutes ?? 0),
+                            backgroundColor: CHART_COLORS.anime
+                        }]
+                        : []),
+                    ...(visibleFormats.includes('ANIMATION')
+                        ? [{
+                            type: 'bar' as const,
+                            label: 'Animation',
+                            data: chartData.map((d) => d.animationMinutes ?? 0),
+                            backgroundColor: CHART_COLORS.animation
+                        }]
+                        : []),
                 ]
                 : [
-                    {
-                        type: 'bar' as const,
-                        label: 'Movies',
-                        data: chartData.map((d) => d.movieMinutes ?? 0),
-                        backgroundColor: CHART_COLORS.movie
-                    },
-                    {
-                        type: 'bar' as const,
-                        label: 'Series',
-                        data: chartData.map((d) => d.seriesMinutes ?? 0),
-                        backgroundColor: CHART_COLORS.series
-                    },
+                    ...(visibleTypes.includes('MOVIE')
+                        ? [{
+                            type: 'bar' as const,
+                            label: 'Movies',
+                            data: chartData.map((d) => d.movieMinutes ?? 0),
+                            backgroundColor: CHART_COLORS.movie
+                        }]
+                        : []),
+                    ...(visibleTypes.includes('SERIES')
+                        ? [{
+                            type: 'bar' as const,
+                            label: 'Series',
+                            data: chartData.map((d) => d.seriesMinutes ?? 0),
+                            backgroundColor: CHART_COLORS.series
+                        }]
+                        : []),
                 ];
 
         return {labels, datasets: [...trendDataset, ...barDatasets]};
-    }, [labels, chartData, groupMode, showTrend]);
+    }, [labels, chartData, groupMode, showTrend, visibleFormats, visibleTypes, visibleMinutesPerPoint]);
 
     const groupedDetails = useMemo(() => {
         if (!details) return null;
@@ -271,7 +316,7 @@ export function Stats() {
                         </span>
                     </h3>
 
-                    <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-4 flex-wrap">
                         <SegmentedControl
                             value={groupMode}
                             onChange={setGroupMode}
@@ -280,6 +325,74 @@ export function Stats() {
                                 {value: 'TYPE', label: 'By Type'},
                             ]}
                         />
+
+                        <div className="w-px h-6 bg-gray-200"/>
+
+                        {groupMode === 'FORMAT' ? (
+                            <div className="inline-flex gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleFormat('LIVE_ACTION')}
+                                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                                        visibleFormats.includes('LIVE_ACTION')
+                                            ? 'bg-emerald-600 text-white'
+                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Live Action
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleFormat('ANIME')}
+                                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                                        visibleFormats.includes('ANIME')
+                                            ? 'bg-orange-500 text-white'
+                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Anime
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleFormat('ANIMATION')}
+                                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                                        visibleFormats.includes('ANIMATION')
+                                            ? 'bg-cyan-500 text-white'
+                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Animation
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="inline-flex gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleType('MOVIE')}
+                                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                                        visibleTypes.includes('MOVIE')
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Movies
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleType('SERIES')}
+                                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                                        visibleTypes.includes('SERIES')
+                                            ? 'bg-emerald-600 text-white'
+                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Series
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="w-px h-6 bg-gray-200"/>
+
                         <ToggleSwitch label="Trend Line" checked={showTrend} onChange={setShowTrend}/>
                     </div>
                 </div>
@@ -356,9 +469,9 @@ export function Stats() {
                                         className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 text-sm">
                                         <span className="font-medium text-gray-800">{g.title}</span>
                                         <span className="text-gray-600">
-                    {g.episodes > 0 ? `${g.episodes} episode(s) — ` : ''}
+                                            {g.episodes > 0 ? `${g.episodes} episode(s) — ` : ''}
                                             {g.minutesWatched} min
-                </span>
+                                        </span>
                                     </li>
                                 ))}
                             </ul>

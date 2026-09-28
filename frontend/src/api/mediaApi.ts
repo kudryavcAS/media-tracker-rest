@@ -11,7 +11,7 @@ export interface GetMediaItemsParams {
     format?: string[];
     status?: string;
     query?: string;
-    includeArchived?: boolean;
+    archived?: boolean;
     sortBy?: string;
     sortDir?: 'ASC' | 'DESC';
     page?: number;

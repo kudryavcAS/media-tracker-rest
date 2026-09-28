@@ -51,7 +51,7 @@ public class MediaController {
             @Parameter(description = "Filter by format (repeat param for multiple)") @RequestParam(required = false) List<MediaFormat> format,
             @Parameter(description = "Filter by status") @RequestParam(required = false) WatchStatus status,
             @Parameter(description = "Search in title or directors") @RequestParam(required = false) String query,
-            @Parameter(description = "Include archived items in results") @RequestParam(defaultValue = "false") boolean includeArchived,
+            @Parameter(description = "Filter by archived status") @RequestParam(defaultValue = "false") boolean archived,
             @Parameter(description = "Field to sort by (title, releaseYear, directors, durationMinutes, status, createdAt)") @RequestParam(required = false) String sortBy,
             @Parameter(description = "Sort direction (ASC or DESC)") @RequestParam(required = false) String sortDir,
             @Parameter(description = "Page number (starts from 1)") @RequestParam(defaultValue = "1") int page,
@@ -59,7 +59,7 @@ public class MediaController {
             @RequestParam(defaultValue = "50") @Max(200) @Positive int size
     ) {
         log.info("REST request to get filtered media items");
-        return PageResponse.from(mediaService.getFilteredItems(contentType, format, status, query, includeArchived, sortBy, sortDir, page, size));
+        return PageResponse.from(mediaService.getFilteredItems(contentType, format, status, query, archived, sortBy, sortDir, page, size));
     }
 
     @GetMapping("/{id}")

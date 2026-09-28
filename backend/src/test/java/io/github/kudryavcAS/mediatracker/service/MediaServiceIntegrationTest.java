@@ -74,8 +74,8 @@ class MediaServiceIntegrationTest extends AbstractIntegrationTest {
                 .extracting(MediaItemResponse::id)
                 .doesNotContain(created.id());
 
-        var includingArchivedPage = mediaService.getFilteredItems(null, null, null, null, true, null, null, 1, 50);
-        assertThat(includingArchivedPage.getContent())
+        var archivedPage = mediaService.getFilteredItems(null, null, null, null, true, null, null, 1, 50);
+        assertThat(archivedPage.getContent())
                 .extracting(MediaItemResponse::id)
                 .contains(created.id());
 

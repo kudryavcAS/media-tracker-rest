@@ -58,11 +58,11 @@ public class MediaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MediaItemResponse> getFilteredItems(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean includeArchived, String sortBy, String sortDir, int page, int size) {
-        log.debug("Fetching items with filters - type: {}, formats: {}, status: {}, query: '{}', includeArchived: {}, sortBy: {}, sortDir: {}, page: {}",
-                contentType, formats, status, query, includeArchived, sortBy, sortDir, page);
+    public Page<MediaItemResponse> getFilteredItems(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean archived, String sortBy, String sortDir, int page, int size) {
+        log.debug("Fetching items with filters - type: {}, formats: {}, status: {}, query: '{}', archived: {}, sortBy: {}, sortDir: {}, page: {}",
+                contentType, formats, status, query, archived, sortBy, sortDir, page);
 
-        Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, formats, status, query, includeArchived);
+        Specification<MediaItem> spec = MediaItemSpecifications.withFilters(contentType, formats, status, query, archived);
 
         Sort sort;
         if (sortBy != null) {

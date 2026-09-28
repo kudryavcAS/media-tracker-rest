@@ -15,7 +15,7 @@ public final class MediaItemSpecifications {
     private MediaItemSpecifications() {
     }
 
-    public static Specification<MediaItem> withFilters(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean includeArchived) {
+    public static Specification<MediaItem> withFilters(String contentType, List<MediaFormat> formats, WatchStatus status, String query, boolean archived) {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -38,9 +38,7 @@ public final class MediaItemSpecifications {
                 predicates.add(cb.or(titleLike, directorLike));
             }
 
-            if (!includeArchived) {
-                predicates.add(cb.equal(root.get("archived"), false));
-            }
+            predicates.add(cb.equal(root.get("archived"), archived));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

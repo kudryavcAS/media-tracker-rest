@@ -65,6 +65,11 @@ export function Library() {
         setSortDir(dir);
     }
 
+    function handlePageChange(newPage: number) {
+        setPage(newPage);
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
     async function handleShutdown() {
         try {
             await shutdownServer();
@@ -170,7 +175,7 @@ export function Library() {
                     <p className="text-center text-gray-400 py-8">Nothing found 🦕</p>}
 
                 {!loading && !error && items.length > 0 &&
-                    <PaginationBar page={page} totalPages={totalPages} onPageChange={setPage}/>}
+                    <PaginationBar page={page} totalPages={totalPages} onPageChange={handlePageChange}/>}
             </div>
         </div>
     );

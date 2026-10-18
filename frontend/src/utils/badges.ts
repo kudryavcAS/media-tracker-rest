@@ -1,4 +1,7 @@
-export function formatBadgeClass(format?: string): string {
+export function formatBadgeClass(contentType?: string, format?: string): string {
+    if (contentType === 'MOVIE' && format === 'LIVE_ACTION') {
+        return 'bg-blue-600';
+    }
     switch (format) {
         case 'ANIME': return 'bg-orange-500';
         case 'ANIMATION': return 'bg-cyan-500';
@@ -6,12 +9,15 @@ export function formatBadgeClass(format?: string): string {
     }
 }
 
-export function formatLabel(format?: string): string {
-    switch (format) {
-        case 'ANIME': return 'Anime';
-        case 'ANIMATION': return 'Animation';
-        default: return 'Live Action';
+export function formatLabel(contentType?: string, format?: string): string {
+    if (contentType === 'MOVIE') {
+        if (format === 'ANIME') return 'Anime Movie';
+        if (format === 'ANIMATION') return 'Anim Movie';
+        return 'Movie';
     }
+    if (format === 'ANIME') return 'Anime';
+    if (format === 'ANIMATION') return 'Animation';
+    return 'Series';
 }
 
 export function statusBadgeClass(status?: string): string {

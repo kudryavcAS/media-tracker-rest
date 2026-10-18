@@ -130,8 +130,8 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
             >
                 <td className="py-3 px-4 align-top">
                     <span
-                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-0.5 rounded-md ${formatBadgeClass(item.format)}`}>
-                        {formatLabel(item.format)}
+                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-0.5 rounded-md ${formatBadgeClass(item.contentType, item.format)}`}>
+                        {formatLabel(item.contentType, item.format)}
                     </span>
                 </td>
 
@@ -193,7 +193,8 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
                                     <div>
                                         <h5 className="font-semibold text-gray-700 mb-2">Watch Progress</h5>
                                         <div className="flex items-center gap-4">
-                                            <span className="font-bold text-lg text-gray-900 leading-none -translate-y-0.5">
+                                            <span
+                                                className="font-bold text-lg text-gray-900 leading-none -translate-y-0.5">
                                                 {item.watchedEpisodes ?? 0} / {item.totalEpisodes ?? '?'} ({progressPct}%)
                                             </span>
                                             <div className="h-2.5 bg-gray-200 rounded-full overflow-hidden w-48">

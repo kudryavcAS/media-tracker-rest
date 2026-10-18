@@ -129,7 +129,8 @@ export function Library() {
                 <table className="w-full table-fixed text-left">
                     <colgroup>
                         <col className="w-[9%]"/>
-                        <col className="w-[34%]"/>
+                        <col className="w-[3%]"/>
+                        <col className="w-[31%]"/>
                         <col className="w-[6%]"/>
                         <col className="w-[21%]"/>
                         <col className="w-[9%]"/>
@@ -139,6 +140,7 @@ export function Library() {
                     <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">
                     <tr>
                         <th className="py-3 px-4 text-left rounded-tl-xl">Format</th>
+                        <th className="py-3 px-1 text-center"></th>
                         <th className="py-3 px-4 text-left">
                             <SortableHeader label="Title" field="title" activeField={sortBy} activeDir={sortDir}
                                             defaultDir="ASC" onSort={handleSort}/>

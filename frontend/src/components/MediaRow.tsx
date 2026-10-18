@@ -135,19 +135,20 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
                     </span>
                 </td>
 
+                <td className="py-3 px-1 align-top text-center text-gray-400">
+                    <ChevronDown size={16}
+                                 className={`inline-block mt-1 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
+                </td>
+
                 <td className="py-3 px-4 font-semibold text-gray-900 align-top">
-                    <div className="flex items-start gap-2 min-w-0">
-                        <ChevronDown size={16}
-                                     className={`shrink-0 mt-0.5 text-gray-500 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
-                        <div className="min-w-0">
-                            <span
-                                className={expanded ? 'block break-words' : 'truncate block'}>{highlightMatch(item.title, query)}</span>
-                            {isSeries && (
-                                <div className="mt-1 h-1.5 w-28 bg-gray-200 rounded-full overflow-hidden">
-                                    <div className="h-full bg-emerald-500" style={{width: `${progressPct}%`}}/>
-                                </div>
-                            )}
-                        </div>
+                    <div className="min-w-0">
+                        <span
+                            className={expanded ? 'block break-words' : 'truncate block'}>{highlightMatch(item.title, query)}</span>
+                        {isSeries && (
+                            <div className="mt-1 h-1.5 w-28 bg-gray-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-emerald-500" style={{width: `${progressPct}%`}}/>
+                            </div>
+                        )}
                     </div>
                 </td>
 
@@ -186,7 +187,7 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
 
             {expanded && (
                 <tr className="bg-gray-50 border-b border-gray-100">
-                    <td colSpan={7} className="p-4">
+                    <td colSpan={8} className="p-4">
                         <div className="border-l-4 border-emerald-500 pl-4 flex flex-col gap-4">
                             <div className="flex items-start justify-between gap-4">
                                 {isSeries ? (

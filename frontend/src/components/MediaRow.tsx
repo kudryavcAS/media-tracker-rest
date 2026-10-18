@@ -140,7 +140,7 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
                                  className={`inline-block mt-1 transition-transform ${expanded ? 'rotate-180' : ''}`}/>
                 </td>
 
-                <td className="py-3 px-4 font-semibold text-gray-900 align-top">
+                <td className="py-3 pl-1 pr-4 font-semibold text-gray-900 align-top">
                     <div className="min-w-0">
                         <span
                             className={expanded ? 'block break-words' : 'truncate block'}>{highlightMatch(item.title, query)}</span>

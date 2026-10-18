@@ -130,18 +130,18 @@ export function Library() {
                     <colgroup>
                         <col className="w-[9%]"/>
                         <col className="w-[3%]"/>
-                        <col className="w-[31%]"/>
+                        <col className="w-[36%]"/>
                         <col className="w-[6%]"/>
-                        <col className="w-[21%]"/>
+                        <col className="w-[20%]"/>
                         <col className="w-[9%]"/>
-                        <col className="w-[7%]"/>
-                        <col className="w-[14%]"/>
+                        <col className="w-[8%]"/>
+                        <col className="w-[9%]"/>
                     </colgroup>
                     <thead className="bg-gray-50 text-gray-700 text-sm font-semibold">
                     <tr>
                         <th className="py-3 px-4 text-left rounded-tl-xl">Format</th>
                         <th className="py-3 px-1 text-center"></th>
-                        <th className="py-3 px-4 text-left">
+                        <th className="py-3 pl-1 pr-4 text-left">
                             <SortableHeader label="Title" field="title" activeField={sortBy} activeDir={sortDir}
                                             defaultDir="ASC" onSort={handleSort}/>
                         </th>

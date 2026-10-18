@@ -130,7 +130,7 @@ export function MediaRow({item, query, onItemUpdated}: MediaRowProps) {
             >
                 <td className="py-3 px-4 align-top">
                     <span
-                        className={`whitespace-nowrap text-white text-xs font-semibold px-2 py-0.5 rounded-md ${formatBadgeClass(item.contentType, item.format)}`}>
+                        className={`whitespace-nowrap text-white text-sm font-semibold px-2.5 py-1 rounded-md ${formatBadgeClass(item.contentType, item.format)}`}>
                         {formatLabel(item.contentType, item.format)}
                     </span>
                 </td>
